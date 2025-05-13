@@ -552,7 +552,7 @@ def main():
                             fn=run_relaxation_simulation,
                             run_on_click=True,
                             cache_examples=True,
-                            label="Relaxation Examples",
+                            label="Try an example!",
                         )
 
                         gr.Markdown(
@@ -618,6 +618,12 @@ def main():
     * This demo builds on a number of great open source packages like [gradio_molecule3d](https://huggingface.co/spaces/simonduerr/gradio_molecule3d), [3dmol.js](https://3dmol.csb.pitt.edu/), [ASE](https://wiki.fysik.dtu.dk/ase/), and many others!
     """
                         )
+                    with gr.Accordion("How fast are these simulations?", open=False):
+                        gr.Markdown(
+                            """
+                            * Each simulation you see would take days or weeks using a traditional quantum chemistry simulation, but UMA can do it in seconds or minutes! 
+                            * Examples in the demo are cached ahead of time so they should load right away, but if you run a custom simulation you'll see a progress bar while the simulation runs.'
+                            """)
 
                 gr.Markdown("## Simulation inputs")
 
