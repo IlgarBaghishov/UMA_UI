@@ -136,7 +136,7 @@ def main():
 
                     with gr.Tab("1. UMA Intro"):
 
-                        gr.Image('figures/uma_overview_figure.svg', label="UMA Overview")
+                        gr.Image('figures/uma_overview_figure.svg', label="UMA Overview", show_share_button=False, show_download_button=False)
 
                         gr.Markdown("This is UMA! It is a large mixture-of-linear-experts graph network model trained on billions of atoms across five open-science simulation datasets released by the FAIR Chemistry team over the past 5 years. If you give it an input structure and which task you're interested in modeling in, it will output the energy, forces, and stress which you can use for a molecular simulation! Try one of these examples to see what it can do.")
                         with gr.Row():
