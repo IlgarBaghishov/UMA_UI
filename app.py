@@ -132,7 +132,7 @@ def main():
                         "# Meta's Universal Model for Atoms (UMA) Demo"
                     )
 
-                    gr.Image('figures/uma_overview_figures.svg', label="UMA Overview")
+                    gr.Image('figures/uma_overview_figure.svg', label="UMA Overview")
 
                     with gr.Tab("1. First UMA simulation!"):
 
