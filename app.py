@@ -132,7 +132,7 @@ def main():
                         "# Meta's Universal Model for Atoms (UMA) Educational Demo"
                     )
 
-                    with gr.Tab("1. Your first UMA simulation!"):
+                    with gr.Tab("1. First UMA simulation!"):
 
                         with gr.Row():
                             gr.Examples(
@@ -573,10 +573,10 @@ def main():
 
                 with gr.Sidebar(open=True):
                     gr.Markdown(
-                        "## Learn more about the Universal Model for Atoms (UMA)"
+                        "## Learn more about UMA"
                     )
                     with gr.Accordion(
-                        "What is the Universal Model for Atoms?", open=False
+                        "What is UMA?", open=False
                     ):
                         gr.Markdown(
                             """
@@ -588,7 +588,7 @@ def main():
     """
                         )
                     with gr.Accordion(
-                        "Should I trust the UMA simulations?", open=False
+                        "Should I trust UMA?", open=False
                     ):
                         gr.Markdown(
                             """
@@ -605,7 +605,7 @@ def main():
     """
                         )
                     with gr.Accordion(
-                        "Open source packages used in this demo", open=False
+                        "Open source packages in this demo", open=False
                     ):
                         gr.Markdown(
                             """
