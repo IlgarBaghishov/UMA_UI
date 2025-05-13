@@ -132,7 +132,7 @@ def main():
                         "# Meta's Universal Model for Atoms (UMA) Educational Demo"
                     )
 
-                    with gr.Tab("1. Your first UMA simulation"):
+                    with gr.Tab("1. Your first UMA simulation!"):
 
                         with gr.Row():
                             gr.Examples(
@@ -554,7 +554,7 @@ def main():
                             "Once you understand how the UMA model can be applied to different types of molecules and materials, the final tab above will help you try it out with your own structures! "
                         )
 
-                    with gr.Tab("3. Try UMA with your own structures!"):
+                    with gr.Tab("3. Try UMA on your structures!"):
                         gr.Markdown(
                             """
                             As the final step of the demo, try running your own structure through the UMA model!
