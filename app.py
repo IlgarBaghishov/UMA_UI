@@ -132,6 +132,8 @@ def main():
                         "# Meta's Universal Model for Atoms (UMA) Demo"
                     )
 
+                    gr.Image('figures/uma_overview_figures.svg', label="UMA Overview")
+
                     with gr.Tab("1. First UMA simulation!"):
 
                         with gr.Row():
@@ -165,7 +167,7 @@ def main():
                                         "OMat",
                                         0,
                                         1,
-                                        "Congratulations, you just ran your first UMA simulation! This is a molecular dynamics simulation of a transition metal complex that shows the atoms vibrating from thermal motion. Now try running some of the examples in the next tab to more thoroughly explore how UMA can be applied to different domains and types of structures.",
+                                        "Congratulations, you just ran your first UMA simulation! This is a molecular dynamics simulation of an inorganic crystal structure that shows the atoms vibrating from thermal motion. Now try running some of the examples in the next tab to more thoroughly explore how UMA can be applied to different domains and types of structures.",
                                     ],
                                 ],
                                 example_labels=[
