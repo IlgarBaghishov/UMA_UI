@@ -132,10 +132,13 @@ def main():
                         "# Meta's Universal Model for Atoms (UMA) Demo"
                     )
 
-                    gr.Image('figures/uma_overview_figure.svg', label="UMA Overview")
+                    
 
-                    with gr.Tab("1. First UMA simulation!"):
+                    with gr.Tab("1. UMA Intro"):
 
+                        gr.Image('figures/uma_overview_figure.svg', label="UMA Overview")
+
+                        gr.Markdown("This is UMA! It is a large mixture-of-linear-experts graph network model trained on billions of atoms across five open-science simulation datasets released by the FAIR Chemistry team over the past 5 years. If you give it an input structure and which task you're interested in modeling in, it will output the energy, forces, and stress which you can use for a molecular simulation! Try one of these examples to see what it can do.")
                         with gr.Row():
                             gr.Examples(
                                 examples=[
@@ -200,12 +203,12 @@ def main():
 
                         gr.Markdown(
                             """
-                            Start by clicking one of the above examples to see how the demo works and what the inputs and outputs will look like. 
+                            In this demo:
                             * Every example is a specific molecular structure or material that can be simulated using the UMA model. 
                             * Each simulation you see would take days or weeks using a traditional quantum chemistry simulation, but UMA can do it in seconds or minutes! 
                             * Examples in the demo are cached ahead of time so they should load right away, but if you run a custom simulation you'll see a progress bar while the simulation runs.
                             
-                            When you've run your first simulation, click on the next tab above to explore the UMA model in more detail and see how it works across many different domains/examples!
+                            When you've run your first UMA simulation, click on the next tab above to explore the UMA model in more detail and see how it works across many different domains/examples!
                             """
                         )
 
