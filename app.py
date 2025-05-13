@@ -571,7 +571,7 @@ def main():
                             """
                         )
 
-                with gr.Sidebar(open=True, width=500):
+                with gr.Sidebar(open=True):
                     gr.Markdown(
                         "## Learn more about the Universal Model for Atoms (UMA)"
                     )
