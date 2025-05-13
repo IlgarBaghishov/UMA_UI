@@ -129,7 +129,7 @@ def main():
 
                 with gr.Column(variant="panel"):
                     gr.Markdown(
-                        "# Meta's Universal Model for Atoms (UMA) Educational Demo"
+                        "# Meta's Universal Model for Atoms (UMA) Demo"
                     )
 
                     with gr.Tab("1. First UMA simulation!"):
