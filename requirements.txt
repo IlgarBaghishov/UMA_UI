@@ -1,0 +1,6 @@
+gradio
+numpy
+ase
+
+# Pinned since huggingface_hub>=0.31 does not support custom inference endpoint posts
+huggingface_hub<0.31

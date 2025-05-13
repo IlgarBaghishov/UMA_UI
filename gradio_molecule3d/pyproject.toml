@@ -1,0 +1,50 @@
+[build-system]
+requires = [
+  "hatchling",
+  "hatch-requirements-txt",
+  "hatch-fancy-pypi-readme>=22.5.0",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "gradio_molecule3d"
+version = "0.0.7"
+description = "Python library for easily interacting with trained machine learning models"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.8"
+authors = [{ name = "YOUR NAME", email = "YOUREMAIL@domain.com" }]
+keywords = [
+  "machine learning",
+  "reproducibility",
+  "visualization",
+  "gradio",
+  "gradio custom component",
+  "gradio-template-File",
+  "protein"
+]
+# Add dependencies here
+dependencies = ["gradio>=4.0,<6.0"]
+classifiers = [
+  'Development Status :: 3 - Alpha',
+  'Operating System :: OS Independent',
+  'Programming Language :: Python :: 3',
+  'Programming Language :: Python :: 3 :: Only',
+  'Programming Language :: Python :: 3.8',
+  'Programming Language :: Python :: 3.9',
+  'Programming Language :: Python :: 3.10',
+  'Programming Language :: Python :: 3.11',
+  'Topic :: Scientific/Engineering',
+  'Topic :: Scientific/Engineering :: Artificial Intelligence',
+  'Topic :: Scientific/Engineering :: Visualization',
+]
+
+
+[project.optional-dependencies]
+dev = ["build", "twine"]
+
+[tool.hatch.build]
+artifacts = ["/backend/gradio_molecule3d/templates", "*.pyi", "/Users/zulissi/micromamba/envs/gradio/lib/python3.12/site-packages/gradio_molecule3d/templates", "/private/home/zulissi/conda_envs/fairchem_020625/lib/python3.12/site-packages/gradio_molecule3d/templates"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["/backend/gradio_molecule3d"]
