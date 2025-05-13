@@ -96,7 +96,6 @@ def run_md_simulation(
         spin_multiplicity = 0
 
     try:
-
         atoms = load_check_ase_atoms(structure_file)
 
         # Check if the file is an example

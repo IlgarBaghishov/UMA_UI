@@ -44,7 +44,6 @@ DEFAULT_MOLECULAR_SETTINGS = {
 
 
 def main():
-
     input_structure = gr.File(
         label="ASE-compatible structure",
         file_types=[".cif", ".pdb", ".xyz", ".traj", "INCAR", "POSCAR"],
@@ -126,19 +125,20 @@ def main():
     with gr.Blocks(theme=gr.themes.Ocean()) as demo:
         with gr.Row():
             with gr.Column(scale=2):
-
                 with gr.Column(variant="panel"):
-                    gr.Markdown(
-                        "# Meta's Universal Model for Atoms (UMA) Demo"
-                    )
-
-                    
+                    gr.Markdown("# Meta's Universal Model for Atoms (UMA) Demo")
 
                     with gr.Tab("1. UMA Intro"):
+                        gr.Image(
+                            "figures/uma_overview_figure.svg",
+                            label="UMA Overview",
+                            show_share_button=False,
+                            show_download_button=False,
+                        )
 
-                        gr.Image('figures/uma_overview_figure.svg', label="UMA Overview", show_share_button=False, show_download_button=False)
-
-                        gr.Markdown("This is UMA! It is a large mixture-of-linear-experts graph network model trained on billions of atoms across five open-science simulation datasets released by the FAIR Chemistry team over the past 5 years. If you give it an input structure and which task you're interested in modeling in, it will output the energy, forces, and stress which you can use for a molecular simulation! Try one of these examples to see what it can do.")
+                        gr.Markdown(
+                            "This is UMA! It is a large mixture-of-linear-experts graph network model trained on billions of atoms across five open-science simulation datasets released by the FAIR Chemistry team over the past 5 years. If you give it an input structure and which task you're interested in modeling in, it will output the energy, forces, and stress which you can use for a molecular simulation! Try one of these examples to see what it can do."
+                        )
                         with gr.Row():
                             gr.Examples(
                                 examples=[
@@ -203,10 +203,6 @@ def main():
 
                         gr.Markdown(
                             """
-                            In this demo:
-                            * Every example is a specific molecular structure or material that can be simulated using the UMA model. 
-                            * Each simulation you see would take days or weeks using a traditional quantum chemistry simulation, but UMA can do it in seconds or minutes! 
-                            * Examples in the demo are cached ahead of time so they should load right away, but if you run a custom simulation you'll see a progress bar while the simulation runs.
                             
                             When you've run your first UMA simulation, click on the next tab above to explore the UMA model in more detail and see how it works across many different domains/examples!
                             """
@@ -577,12 +573,8 @@ def main():
                         )
 
                 with gr.Sidebar(open=True):
-                    gr.Markdown(
-                        "## Learn more about UMA"
-                    )
-                    with gr.Accordion(
-                        "What is UMA?", open=False
-                    ):
+                    gr.Markdown("## Learn more about UMA")
+                    with gr.Accordion("What is UMA?", open=False):
                         gr.Markdown(
                             """
     * UMA models predict motion and behavior at the atomic scale, ultimately reducing the development cycle in molecular and materials discovery and unlocking new possibilities for innovation and impact.  
@@ -592,9 +584,7 @@ def main():
     Read the UMA paper for details or download the UMA model and FAIR Chemistry repository to use this yourself!
     """
                         )
-                    with gr.Accordion(
-                        "Should I trust UMA?", open=False
-                    ):
+                    with gr.Accordion("Should I trust UMA?", open=False):
                         gr.Markdown(
                             """
     * The UMA model paper contains rigorous accuracy benchmarks on a number of validation sets across chemistry and materials science. As of model release the UMA model was at or near the state-of-the-art for generalization machine learning potentials.  Read the UMA paper for details.
@@ -609,9 +599,7 @@ def main():
     * Meta's Fundamental AI Research Lab (FAIR) is drastically accelerating this process by developing accurate and generalizable machine learning models, building on work by academic, industrial, and national lab collaborators. 
     """
                         )
-                    with gr.Accordion(
-                        "Open source packages in this demo", open=False
-                    ):
+                    with gr.Accordion("Open source packages in this demo", open=False):
                         gr.Markdown(
                             """
     * The model code is available on github at [FAIR chemistry repo](https://github.com/facebookresearch/fairchem)
@@ -623,7 +611,8 @@ def main():
                             """
                             * Each simulation you see would take days or weeks using a traditional quantum chemistry simulation, but UMA can do it in seconds or minutes! 
                             * Examples in the demo are cached ahead of time so they should load right away, but if you run a custom simulation you'll see a progress bar while the simulation runs.'
-                            """)
+                            """
+                        )
 
                 gr.Markdown("## Simulation inputs")
 
@@ -631,7 +620,6 @@ def main():
                     gr.Markdown("### 1. Example structure (or upload your own!)")
                     with gr.Row():
                         with gr.Column():
-
                             input_structure.render()
 
                             gr.LoginButton(size="large")
@@ -853,7 +841,6 @@ def main():
 
 
 if __name__ == "__main__":
-
     # On load, build and install the gradio_molecul3d fork
     subprocess.call(
         ["gradio", "cc", "install"], cwd=Path(__file__).parent / "gradio_molecule3d/"

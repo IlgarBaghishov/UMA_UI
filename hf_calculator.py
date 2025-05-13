@@ -30,7 +30,6 @@ def hash_save_file(atoms: ase.Atoms, task_name, path: Path | str):
 
 
 class HFEndpointCalculator(Calculator):
-
     # A simple calculator that uses the Hugging Face Inference Endpoints to run
 
     implemented_properties = ["energy", "free_energy", "stress", "forces"]
