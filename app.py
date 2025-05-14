@@ -213,9 +213,9 @@ def main():
                     with gr.Tab("2. Explore UMA's capabilities"):
                         gr.Markdown(
                             """
-    These next examples are designed to show how the UMA model can be applied to different domains and types of structures, and how different model inputs can impact the results!
-    * As you try each one, look at how the inputs change below, and the simulation outputs change on the right
-    * Each UMA task corresponds to a different domain of chemistry, and a different Density Functional Theory (DFT) code and level of theory that was used for the training data.
+    These next examples are designed to show how the UMA model can be applied to different domains and types of structures, and how different model inputs can impact the results! Each UMA task corresponds to a different domain of chemistry, and a different Density Functional Theory (DFT) code and level of theory that was used for the training data.
+    
+    As you try each one, look at how the inputs change below, and the simulation outputs change on the right. Feel free to try changing some of the settings below and re-run the simulations to see how the results can vary.
     """
                         )
                         gr.Examples(
@@ -555,7 +555,7 @@ def main():
                         gr.Markdown(
                             """
 
-                            Feel free to try changing some of the settings below and re-run the simulations to see how the results can vary.
+                            
 
                             Once you understand how the UMA model can be applied to different types of molecules and materials, the final tab above will help you try it out with your own structures!
                             """
