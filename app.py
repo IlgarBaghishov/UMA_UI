@@ -508,7 +508,7 @@ def main():
                                 [
                                     str(
                                         Path(__file__).parent
-                                        / "./examples/MOF_CO2_2H2O.traj"
+                                        / "./examples/zeolite_CO2_2H2O.traj"
                                     ),
                                     300,
                                     0.05,
@@ -516,7 +516,7 @@ def main():
                                     0,
                                     1,
                                     False,
-                                    "This is a metal organic framework (MOF) structure using the ODac task. You might study structures like if designing MOFs for direct air capture (DAC) calculations. Look carefully for the co-adsorption between CO2 and two water molecules in the pore, which you might study if you were interested in the effect of humidity on DAC performance! You can also try the OMol and OMat tasks to see if the results differ.",
+                                    "This is a porous zeolite material using the ODac task. You might study structures like if designing materials for direct air capture (DAC) calculations. Look carefully for the co-adsorption between CO2 and two water molecules in the pore, which you might study if you were interested in the effect of humidity on DAC performance! You can also try the OMol and OMat tasks to see if the results differ.",
                                 ],
                             ],
                             example_labels=[
