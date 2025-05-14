@@ -49,7 +49,7 @@ class HFEndpointCalculator(Calculator):
         if not example:
             try:
                 hf_hub.HfApi().auth_check(
-                    repo_id="facebook/OMAT24", token=oauth_token.token
+                    repo_id="facebook/UMA", token=oauth_token.token
                 )
                 hash_save_file(atoms, task_name, "/data/custom_inputs/")
             except (hf_hub.errors.HfHubHTTPError, AttributeError):
@@ -69,8 +69,6 @@ class HFEndpointCalculator(Calculator):
         Calculator.calculate(self, atoms, properties, system_changes)
 
         task_name = self.task_name.lower()
-        if task_name == "omc":
-            task_name = "osc"
 
         # Run inference via a post request to the endpoint
         try:
