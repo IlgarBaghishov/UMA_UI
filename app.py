@@ -716,7 +716,7 @@ def main():
 
                                         **Relevant applications:** Inorganic materials discovery, solar photovoltaics, advanced alloys, superconductors, electronic materials, optical materials
 
-                                        **Level of theory:** PBE/PBE+U as implemented in VASP using Materials Project suggested settings, except with VASP6 pseudopotentials. No dispersion.
+                                        **Level of theory:** PBE/PBE+U as implemented in VASP using Materials Project suggested settings, except with VASP 54 pseudopotentials. No dispersion.
 
                                         **Additional inputs:** UMA has not seen varying charge or spin multiplicity for the OMat task, and expects total_charge=0 and spin multiplicity=0 as model inputs. 
 
