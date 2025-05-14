@@ -587,7 +587,7 @@ def main():
     * UMA models are based on Density Functional Theory (DFT) training datasets. DFT simulations are a commonly used quantum chemistry method to simulate and understand behavior at the atomic scale.
     * UMA models are large mixture-of-linear-experts graph networks models trained on billions of atoms across five open-science simulation datasets released by the FAIR Chemistry team over the past 5 years. This demo uses the small UMA model with 146M total parameters, 32 experts, and 6M active parameters at any time to predict across all of these domains.  
 
-    Read the UMA paper for details or download the UMA model and FAIR Chemistry repository to use this yourself!
+    Read the UMA paper for details or [download the UMA model](https://huggingface.co/facebook/UMA) and [FAIR Chemistry repository](https://github.com/facebookresearch/fairchem) to use this yourself!
     """
                         )
                     with gr.Accordion("Should I trust UMA?", open=False):
@@ -685,7 +685,7 @@ def main():
                                     gr.Markdown(
                                         """
 
-                                        OMol25 comprises over 100 million calculations covering small molecules, biomolecules, metal complexes, and electrolytes.
+                                        [OMol25](https://arxiv.org/abs/2505.08762) comprises over 100 million calculations covering small molecules, biomolecules, metal complexes, and electrolytes.
 
                                         **Relevant applications:** Biology, organic chemistry, protein folding, small-molecule pharmaceuticals, organic liquid properties, homogeneous catalysis
 
@@ -731,7 +731,7 @@ def main():
                                     gr.Markdown(
                                         """
 
-                                        OC20 comprises >100 million calculations of small molecules adsorbed on catalyst surfaces formed from materials in the Materials Project. 
+                                        [OC20](https://pubs.acs.org/doi/abs/10.1021/acscatal.0c04525) comprises >100 million calculations of small molecules adsorbed on catalyst surfaces formed from materials in the Materials Project. It was updated to total energy predictions for the UMA release.
 
                                         **Relevant applications:** Renewable energy, catalysis, fuel cells, energy conversion, sustainable fertilizer production, chemical refining, plastics synthesis/upcycling
 
@@ -747,7 +747,7 @@ def main():
                                     gr.Markdown(
                                         """
 
-                                        ODAC23 comprises >10 million calculations of CO2/H2O molecules adsorbed in Metal Organic Frameworks sampled from various open databases like CoreMOF.
+                                        [ODAC23](https://pubs.acs.org/doi/full/10.1021/acscentsci.3c01629) comprises >10 million calculations of CO2/H2O molecules adsorbed in Metal Organic Frameworks sampled from various open databases like CoreMOF. It was updated to total energy predictions for the UMA release.
 
                                         **Relevant applications:** Direct air capture, carbon capture and storage, CO2 conversion, catalysis
 
