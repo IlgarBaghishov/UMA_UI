@@ -660,9 +660,7 @@ def main():
                                 """
                             To use your own structures, you need access to the [gated UMA model repository](https://huggingface.co/facebook/UMA) and you need to login with the button above. See the final tab above '3. Try UMA with your own structures!' for more details and debugging steps!
                             
-                            Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.
-                            * If you get a redirect error when logging in, please try visiting the direct demo url in a new tab(https://facebook-fairchem-uma-demo.hf.space/) and try again
-                            
+                            Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.                            
                             """
                             )
                         with gr.Column(scale=3):
