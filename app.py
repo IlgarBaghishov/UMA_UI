@@ -134,7 +134,8 @@ def main():
                             label="UMA Overview",
                             show_share_button=False,
                             show_download_button=False,
-                            show_label=False
+                            show_label=False,
+                            show_fullscreen_button=False,
                         )
 
                         gr.Markdown(
@@ -567,7 +568,7 @@ def main():
 
                             To use a custom input structure with this demo:
                             1. [Request gated model access.](https://huggingface.co/facebook/UMA) Requests for model access are typically processed within a matter of minutes.
-                            2. Login to Hugging Face using the "Sign in with Hugging Face button" in the inputs button.                       
+                            2. Login to Hugging Face using the "Sign in with Hugging Face button" in the inputs section.                       
                             3. Then upload a structure file below and click run!
 
                             * Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.
@@ -604,13 +605,7 @@ def main():
     * Meta's Fundamental AI Research Lab (FAIR) is drastically accelerating this process by developing accurate and generalizable machine learning models, building on work by academic, industrial, and national lab collaborators. 
     """
                         )
-                    with gr.Accordion("Open source packages in this demo", open=False):
-                        gr.Markdown(
-                            """
-    * The model code is available on github at [FAIR chemistry repo](https://github.com/facebookresearch/fairchem)
-    * This demo builds on a number of great open source packages like [gradio_molecule3d](https://huggingface.co/spaces/simonduerr/gradio_molecule3d), [3dmol.js](https://3dmol.csb.pitt.edu/), [ASE](https://wiki.fysik.dtu.dk/ase/), and many others!
-    """
-                        )
+
                     with gr.Accordion("How fast are these simulations?", open=False):
                         gr.Markdown(
                             """
@@ -625,6 +620,14 @@ def main():
         * While UMA represents a step forward in terms of having a single model that works across chemistry and materials science, we know the model has limitations and weaknesses and there will be cases where the model fails to produce an accurate simulation.
         * Ab-initio calculations are not perfect. You should always consider the limitations of the level of theory, the code, and the pseudopotentials. 
         """
+                        )
+
+                    with gr.Accordion("Open source packages in this demo", open=False):
+                        gr.Markdown(
+                            """
+    * The model code is available on github at [FAIR chemistry repo](https://github.com/facebookresearch/fairchem)
+    * This demo builds on a number of great open source packages like [gradio_molecule3d](https://huggingface.co/spaces/simonduerr/gradio_molecule3d), [3dmol.js](https://3dmol.csb.pitt.edu/), [ASE](https://wiki.fysik.dtu.dk/ase/), and many others!
+    """
                         )
 
                     gr.Markdown("## Debugging")
