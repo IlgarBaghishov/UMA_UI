@@ -137,7 +137,7 @@ def main():
                         )
 
                         gr.Markdown(
-                            "This is UMA! It is a large mixture-of-linear-experts graph network model trained on billions of atoms across five open-science simulation datasets released by the FAIR Chemistry team over the past 5 years. If you give it an input structure and which task you're interested in modeling in, it will output the energy, forces, and stress which you can use for a molecular simulation! Try one of these examples to see what it can do."
+                            "This is the UMA! It is a large mixture-of-linear-experts graph network model trained on billions of atoms across five open-science simulation datasets released by the FAIR Chemistry team over the past 5 years. If you give it an input structure and which task you're interested in modeling in, it will output the energy, forces, and stress which you can use for a molecular simulation! Try one of these examples to see what it can do."
                         )
                         with gr.Row():
                             gr.Examples(
@@ -198,7 +198,7 @@ def main():
                                 fn=run_md_simulation,
                                 run_on_click=True,
                                 cache_examples=True,
-                                label="Molecular Dynamics Examples",
+                                label="Try an example!",
                             )
 
                         gr.Markdown(
@@ -548,7 +548,7 @@ def main():
                             fn=run_relaxation_simulation,
                             run_on_click=True,
                             cache_examples=True,
-                            label="Try an example!",
+                            label="Molecular dynamics examples!",
                         )
 
                         gr.Markdown(
@@ -566,7 +566,7 @@ def main():
                             3. Then upload a structure file below and click run!
 
                             * Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.
-                            * If you get a redirect error when logging in, please try visiting the direct demo url (https://facebook-fairchem-uma-demo.hf.space/) and try again
+                            * If you get a redirect error when logging in, please try visiting the direct demo url in a new tab (https://facebook-fairchem-uma-demo.hf.space/) and try again
                             * Your structure should be in a format supported by ASE 3.25, including .xyz, .cif, .pdb, ASE .traj, INCAR, or POSCAR.
                             * Your structure should either have periodic boundary conditions (PBC) all True, or all False. Support for mixed PBC may be added in the future. 
                             """
@@ -614,6 +614,25 @@ def main():
                             """
                         )
 
+                    with gr.Accordion("Model Disclaimers", open=False):
+                        gr.Markdown(
+                            """
+        * While UMA represents a step forward in terms of having a single model that works across chemistry and materials science, we know the model has limitations and weaknesses and there will be cases where the model fails to produce an accurate simulation.
+        * Ab-initio calculations are not perfect. You should always consider the limitations of the level of theory, the code, and the pseudopotentials. 
+        """
+                        )
+                    with gr.Accordion(
+                        "How long should I wait for this simulation?", open=False
+                    ):
+                        gr.Markdown(
+                            """
+    * Every calculation uses a pool of GPUs to process simulations for all current users. You can achieve much higher performance with a dedicated GPU and MD-mode enabled. 
+    * Most simulation should finish within a few minutes. Example results are cached, and if you are running a custom simulation you can follow the progress bar
+    * if you don't see progress or the simulation takes more than ~5min, probably there was an error and please try submitting again. 
+    * If you notice any issues please submit them as issues on the [FAIR Chemistry GitHub](https://github.com/facebookresearch/fairchem).
+    """
+                        )
+
                 gr.Markdown("## Simulation inputs")
 
                 with gr.Column(variant="panel"):
@@ -629,7 +648,7 @@ def main():
                             To use your own structures, you need access to the [gated UMA model repository](https://huggingface.co/facebook/UMA) and you need to login with the button above. 
                             * See the final tab above '3. Try UMA with your own structures!' for more details and debugging steps!
                             * Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.
-                            * If you get a redirect error when logging in, please try visiting the direct demo url (https://facebook-fairchem-uma-demo.hf.space/) and try again
+                            * If you get a redirect error when logging in, please try visiting the direct demo url in a new tab(https://facebook-fairchem-uma-demo.hf.space/) and try again
                             
                             """
                             )
@@ -753,24 +772,6 @@ def main():
                         "What should I look for in this simulation?", open=True
                     ):
                         explanation.render()
-                    with gr.Accordion("Model Disclaimers", open=False):
-                        gr.Markdown(
-                            """
-    * While UMA represents a step forward in terms of having a single model that works across chemistry and materials science, we know the model has limitations and weaknesses and there will be cases where the model fails to produce an accurate simulation.
-    * Ab-initio calculations are not perfect. You should always consider the limitations of the level of theory, the code, and the pseudopotentials. 
-    """
-                        )
-                    with gr.Accordion(
-                        "How long should I wait for this simulation?", open=False
-                    ):
-                        gr.Markdown(
-                            """
-* Every calculation uses a pool of GPUs to process simulations for all current users. You can achieve much higher performance with a dedicated GPU and MD-mode enabled. 
-* Most simulation should finish within a few minutes. Example results are cached, and if you are running a custom simulation you can follow the progress bar
-* if you don't see progress or the simulation takes more than ~5min, probably there was an error and please try submitting again. 
-* If you notice any issues please submit them as issues on the [FAIR Chemistry GitHub](https://github.com/facebookresearch/fairchem).
-"""
-                        )
 
                     output_traj.render()
                 with gr.Tab("Log"):
