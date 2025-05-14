@@ -1,6 +1,6 @@
 ---
-title: FAIR Chem UMA Educational Demo
-emoji: 😻
+title: FAIR Chem UMA Demo
+emoji: ⚛️
 colorFrom: gray
 colorTo: gray
 sdk: gradio
