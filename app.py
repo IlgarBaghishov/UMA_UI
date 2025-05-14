@@ -686,7 +686,7 @@ def main():
 
                                         **Relevant applications:** Biology, organic chemistry, protein folding, small-molecule pharmaceuticals, organic liquid properties, homogeneous catalysis
 
-                                        **Level of theory:** wB97M-V/def2-TZVPD as implemented in ORCA6, including many-body dispersion. All solvation should be explicit. 
+                                        **Level of theory:** wB97M-V/def2-TZVPD as implemented in ORCA6, including non-local dispersion. All solvation should be explicit. 
 
                                         **Additional inputs:** total charge and spin multiplicity. If you don't know what these are, you should be very careful if modeling charged or open-shell systems. This can be used to study radical chemistry or understand the impact of magnetic states on the structure of a molecule.
 
