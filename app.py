@@ -584,7 +584,7 @@ def main():
     * UMA models are based on Density Functional Theory (DFT) training datasets. DFT simulations are a commonly used quantum chemistry method to simulate and understand behavior at the atomic scale.
     * UMA models are large mixture-of-linear-experts graph networks models trained on billions of atoms across five open-science simulation datasets released by the FAIR Chemistry team over the past 5 years. This demo uses the small UMA model with 146M total parameters, 32 experts, and 6M active parameters at any time to predict across all of these domains.  
 
-    [Read the UMA paper for details](https://ai.meta.com/research/publications/uma-a-family-of-universal-models-for-atoms/
+    [Read the UMA paper for details](https://ai.meta.com/research/publications/uma-a-family-of-universal-models-for-atoms/)
 ) or [download the UMA model](https://huggingface.co/facebook/UMA) and [FAIR Chemistry repository](https://github.com/facebookresearch/fairchem) to use this yourself!
     """
                         )
