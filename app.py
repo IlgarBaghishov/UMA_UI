@@ -134,6 +134,7 @@ def main():
                             label="UMA Overview",
                             show_share_button=False,
                             show_download_button=False,
+                            show_label=False
                         )
 
                         gr.Markdown(
@@ -214,7 +215,6 @@ def main():
     These next examples are designed to show how the UMA model can be applied to different domains and types of structures, and how different model inputs can impact the results!
     * As you try each one, look at how the inputs change below, and the simulation outputs change on the right
     * Each UMA task corresponds to a different domain of chemistry, and a different Density Functional Theory (DFT) code and level of theory that was used for the training data.
-    * Feel free to try changing some of the settings below and re-run the simulations to see how the results can vary!
     """
                         )
                         gr.Examples(
@@ -552,7 +552,12 @@ def main():
                         )
 
                         gr.Markdown(
-                            "Once you understand how the UMA model can be applied to different types of molecules and materials, the final tab above will help you try it out with your own structures! "
+                            """
+
+                            Feel free to try changing some of the settings below and re-run the simulations to see how the results can vary.
+
+                            Once you understand how the UMA model can be applied to different types of molecules and materials, the final tab above will help you try it out with your own structures!
+                            """
                         )
 
                     with gr.Tab("3. Try UMA on your structures!"):
@@ -562,7 +567,7 @@ def main():
 
                             To use a custom input structure with this demo:
                             1. [Request gated model access.](https://huggingface.co/facebook/UMA) Requests for model access are typically processed within a matter of minutes.
-                            2. Login to Hugging Face using the "Sign in with Hugging Face button" in the .                       
+                            2. Login to Hugging Face using the "Sign in with Hugging Face button" in the inputs button.                       
                             3. Then upload a structure file below and click run!
 
                             * Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.
@@ -621,22 +626,30 @@ def main():
         * Ab-initio calculations are not perfect. You should always consider the limitations of the level of theory, the code, and the pseudopotentials. 
         """
                         )
-                    with gr.Accordion(
-                        "How long should I wait for this simulation?", open=False
-                    ):
+
+                    gr.Markdown("## Debugging")
+
+                    with gr.Accordion("Simulation took >5min", open=False):
                         gr.Markdown(
                             """
-    * Every calculation uses a pool of GPUs to process simulations for all current users. You can achieve much higher performance with a dedicated GPU and MD-mode enabled. 
+* Every calculation uses a pool of GPUs to process simulations for all current users. You can achieve much higher performance with a dedicated GPU and MD-mode enabled. 
     * Most simulation should finish within a few minutes. Example results are cached, and if you are running a custom simulation you can follow the progress bar
     * if you don't see progress or the simulation takes more than ~5min, probably there was an error and please try submitting again. 
     * If you notice any issues please submit them as issues on the [FAIR Chemistry GitHub](https://github.com/facebookresearch/fairchem).
-    """
+                            """
+                        )
+
+                    with gr.Accordion("Redirect error on login", open=False):
+                        gr.Markdown(
+                            """
+* If you notice a redirect error when clicking the login to Huggingface button, open a new tab and go to the direct demo url (https://facebook-fairchem-uma-demo.hf.space/) and try again!
+                            """
                         )
 
                 gr.Markdown("## Simulation inputs")
 
                 with gr.Column(variant="panel"):
-                    gr.Markdown("### 1. Example structure (or upload your own!)")
+                    gr.Markdown("### 1. Input structure (example or upload your own!)")
                     with gr.Row():
                         with gr.Column():
                             input_structure.render()
@@ -645,9 +658,9 @@ def main():
 
                             gr.Markdown(
                                 """
-                            To use your own structures, you need access to the [gated UMA model repository](https://huggingface.co/facebook/UMA) and you need to login with the button above. 
-                            * See the final tab above '3. Try UMA with your own structures!' for more details and debugging steps!
-                            * Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.
+                            To use your own structures, you need access to the [gated UMA model repository](https://huggingface.co/facebook/UMA) and you need to login with the button above. See the final tab above '3. Try UMA with your own structures!' for more details and debugging steps!
+                            
+                            Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.
                             * If you get a redirect error when logging in, please try visiting the direct demo url in a new tab(https://facebook-fairchem-uma-demo.hf.space/) and try again
                             
                             """
