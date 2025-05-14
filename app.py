@@ -584,13 +584,15 @@ def main():
     * UMA models are based on Density Functional Theory (DFT) training datasets. DFT simulations are a commonly used quantum chemistry method to simulate and understand behavior at the atomic scale.
     * UMA models are large mixture-of-linear-experts graph networks models trained on billions of atoms across five open-science simulation datasets released by the FAIR Chemistry team over the past 5 years. This demo uses the small UMA model with 146M total parameters, 32 experts, and 6M active parameters at any time to predict across all of these domains.  
 
-    [Read the UMA paper for details](https://fburl.com/q8h083qs) or [download the UMA model](https://huggingface.co/facebook/UMA) and [FAIR Chemistry repository](https://github.com/facebookresearch/fairchem) to use this yourself!
+    [Read the UMA paper for details](https://ai.meta.com/research/publications/uma-a-family-of-universal-models-for-atoms/
+) or [download the UMA model](https://huggingface.co/facebook/UMA) and [FAIR Chemistry repository](https://github.com/facebookresearch/fairchem) to use this yourself!
     """
                         )
                     with gr.Accordion("Should I trust UMA?", open=False):
                         gr.Markdown(
                             """
-    * The UMA model paper contains rigorous accuracy benchmarks on a number of validation sets across chemistry and materials science. As of model release the UMA model was at or near the state-of-the-art for generalization machine learning potentials.  [Read the UMA paper for details.](https://fburl.com/q8h083qs)
+    * The UMA model paper contains rigorous accuracy benchmarks on a number of validation sets across chemistry and materials science. As of model release the UMA model was at or near the state-of-the-art for generalization machine learning potentials.  [Read the UMA paper for details.](https://ai.meta.com/research/publications/uma-a-family-of-universal-models-for-atoms/
+)
     * Rigorously predicting when AI/ML models will extrapolate (or not) to new domains is an ongoing research area. The best approach is to find or build benchmarks that are similar to the questions you are studying, or be prepared to run some DFT simulations on predictions to validate results on a sample of structures that are relevant to your research problem. 
     """
                         )
