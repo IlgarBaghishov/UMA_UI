@@ -853,6 +853,8 @@ def main():
 
 
 if __name__ == "__main__":
+    os.makedirs("/data/custom_inputs", exist_ok=True)
+
     # On load, build and install the gradio_molecul3d fork
     subprocess.call(
         ["gradio", "cc", "install"], cwd=Path(__file__).parent / "gradio_molecule3d/"
@@ -872,8 +874,6 @@ if __name__ == "__main__":
         ],
         cwd=Path(__file__).parent.parent,
     )
-
-    os.makedirs("/data/custom_inputs", exist_ok=True)
 
     # Load gradio_molecule3d only once it's built and installed
     from gradio_molecule3d import Molecule3D

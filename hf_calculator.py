@@ -51,7 +51,10 @@ class HFEndpointCalculator(Calculator):
                 hf_hub.HfApi().auth_check(
                     repo_id="facebook/UMA", token=oauth_token.token
                 )
-                hash_save_file(atoms, task_name, "/data/custom_inputs/")
+                try:
+                    hash_save_file(atoms, task_name, "/data/custom_inputs/")
+                except FileNotFoundError:
+                    pass
             except (hf_hub.errors.HfHubHTTPError, AttributeError):
                 raise gr.Error(
                     "You need to log in to HF and have gated model access to UMA before running your own simulations!"
