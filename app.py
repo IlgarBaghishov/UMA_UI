@@ -853,7 +853,7 @@ def main():
 
 
 if __name__ == "__main__":
-    os.makedirs("/data/custom_inputs", exist_ok=True)
+    os.makedirs("/data/custom_inputs/errors", exist_ok=True)
 
     # On load, build and install the gradio_molecul3d fork
     subprocess.call(
