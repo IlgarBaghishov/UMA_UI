@@ -122,7 +122,7 @@ def main():
         label="ASE Reproduction Script",
     )
 
-    with gr.Blocks(theme=gr.themes.Ocean()) as demo:
+    with gr.Blocks(theme=gr.themes.Ocean(), title="FAIR Chem UMA Demo") as demo:
         with gr.Row():
             with gr.Column(scale=2):
                 with gr.Column(variant="panel"):
