@@ -781,13 +781,12 @@ def main():
                         with gr.Column():
                             input_structure.render()
 
-                            gr.Markdown('**Warnings:**')
-                            
+                            gr.Markdown("**Validation Errors:**")
+
                             structure_validation = gr.Markdown()
 
                             login_button = gr.LoginButton(size="large")
 
-                            
                         with gr.Column(scale=3):
                             input_visualization.render()
 

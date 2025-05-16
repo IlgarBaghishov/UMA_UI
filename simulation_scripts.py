@@ -94,7 +94,7 @@ Note that uploaded structure will be stored by this demo to analyze model usage 
         return (
             gr.Button(interactive=True),
             gr.Button(interactive=True),
-            "Valid structure file and you are logged in!",
+            "",
         )
 
 
