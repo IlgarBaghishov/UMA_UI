@@ -102,7 +102,12 @@ def find_minimum_repeats(atoms, min_length):
 
 def convert_file_to_pdb(file_path: str | Path, gradio_cache: str | Path) -> str:
     # Read the file using ASE, and convert even if it's pdb to make sure all elements go lower case
-    structures = ase.io.read(file_path, ':')
+
+    try:
+        structures = ase.io.read(file_path, ':')
+    except Exception as e:
+        # Bad upload structure, no need to visualize
+        return None
 
     if all(structures[0].pbc):
         # find the minimum number of repeats in each unit cell direction to meet at least 20 angstroms
