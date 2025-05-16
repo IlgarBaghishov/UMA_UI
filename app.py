@@ -12,7 +12,11 @@ from pathlib import Path
 
 import gradio as gr
 
-from simulation_scripts import run_md_simulation, run_relaxation_simulation
+from simulation_scripts import (
+    run_md_simulation,
+    run_relaxation_simulation,
+    validate_ase_atoms_and_login,
+)
 
 DEFAULT_MOLECULAR_REPRESENTATIONS = [
     {
@@ -515,7 +519,8 @@ def main():
                                 label="Relaxation examples!",
                             )
                         with gr.Accordion(
-                            "UMA can use different output heads for the same structures", open=False
+                            "UMA can use different output heads for the same structures",
+                            open=False,
                         ):
                             gr.Examples(
                                 examples=[
@@ -674,7 +679,6 @@ def main():
                                 label="Molecular Dynamics Examples",
                             )
 
-
                         gr.Markdown(
                             """
                             Once you understand how the UMA model can be applied to different types of molecules and materials, the final tab above will help you try it out with your own structures!
@@ -777,7 +781,9 @@ def main():
                         with gr.Column():
                             input_structure.render()
 
-                            gr.LoginButton(size="large")
+                            structure_validation = gr.Markdown()
+
+                            login_button = gr.LoginButton(size="large")
 
                             gr.Markdown(
                                 """
@@ -973,15 +979,15 @@ def main():
         )
 
         input_structure.change(
-            lambda file: gr.Button(interactive=bool(file)),
-            inputs=[input_structure],
-            outputs=[optimization_button],
+            validate_ase_atoms_and_login,
+            inputs=[input_structure, login_button],
+            outputs=[optimization_button, md_button, structure_validation],
         )
 
-        input_structure.change(
-            lambda file: gr.Button(interactive=bool(file)),
-            inputs=[input_structure],
-            outputs=[md_button],
+        login_button.change(
+            validate_ase_atoms_and_login,
+            inputs=[input_structure, login_button],
+            outputs=[optimization_button, md_button, structure_validation],
         )
 
     demo.launch()

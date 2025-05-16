@@ -42,6 +42,58 @@ MAX_ATOMS = os.environ.get("MAX_ATOMS", 2000)
 INFERENCE_ENDPOINT_URL = os.environ["INFERENCE_ENDPOINT_URL"]
 
 
+def validate_ase_atoms_and_login(structure_file, login_button_value):
+    # Validate and write the uploaded file content
+    if not structure_file:
+        return (
+            gr.Button(interactive=False),
+            gr.Button(interactive=False),
+            "Missing input structure!",
+        )
+
+    try:
+        atoms = ase.io.read(structure_file)
+    except Exception as e:
+        return (
+            gr.Button(interactive=False),
+            gr.Button(interactive=False),
+            f"Failed to load ASE input: {str(e)}!",
+        )
+
+    if len(atoms) == 0:
+        return (
+            gr.Button(interactive=False),
+            gr.Button(interactive=False),
+            "No atoms in the structure file!",
+        )
+    elif not (all(atoms.pbc) or np.all(~np.array(atoms.pbc))):
+        return (
+            gr.Button(interactive=False),
+            gr.Button(interactive=False),
+            f"Your atoms has PBC {atoms.pbc}. Mixed PBC are not supported yet - please set PBC all True or False in your structure before uploading!",
+        )
+    elif len(atoms) > MAX_ATOMS:
+        return (
+            gr.Button(interactive=False),
+            gr.Button(interactive=False),
+            f"Structure file contains {len(atoms)}, which is more than {MAX_ATOMS} atoms. Please use a smaller structure for this demo, or run this on a local machine!",
+        )
+    elif (hash_file(structure_file) not in EXAMPLE_FILE_HASHES) and (
+        "login_button_value" not in login_button_value
+    ):
+        return (
+            gr.Button(interactive=False),
+            gr.Button(interactive=False),
+            "You must login to huggingface to use a custom structure!",
+        )
+    else:
+        return (
+            gr.Button(interactive=True),
+            gr.Button(interactive=True),
+            "Valid structure file and you are logged in!",
+        )
+
+
 def load_check_ase_atoms(structure_file):
     # Validate and write the uploaded file content
     if not structure_file:
