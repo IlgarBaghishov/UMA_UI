@@ -849,6 +849,18 @@ def main():
             spin_multiplicity,
         )
 
+        input_structure.change(
+            lambda file: gr.Button(interactive=bool(file)),
+            inputs=[input_structure],
+            outputs=[optimization_button],
+        )
+
+        input_structure.change(
+            lambda file: gr.Button(interactive=bool(file)),
+            inputs=[input_structure],
+            outputs=[md_button],
+        )
+
     demo.launch()
 
 
