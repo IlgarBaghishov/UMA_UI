@@ -781,17 +781,13 @@ def main():
                         with gr.Column():
                             input_structure.render()
 
+                            gr.Markdown('**Warnings:**')
+                            
                             structure_validation = gr.Markdown()
 
                             login_button = gr.LoginButton(size="large")
 
-                            gr.Markdown(
-                                """
-                            To use your own structures, you need access to the [gated UMA model repository](https://huggingface.co/facebook/UMA) and you need to login with the button above. See the final tab above '3. Try UMA with your own structures!' for more details and debugging steps!
                             
-                            Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.                            
-                            """
-                            )
                         with gr.Column(scale=3):
                             input_visualization.render()
 

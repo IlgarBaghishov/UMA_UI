@@ -79,12 +79,16 @@ def validate_ase_atoms_and_login(structure_file, login_button_value):
             f"Structure file contains {len(atoms)}, which is more than {MAX_ATOMS} atoms. Please use a smaller structure for this demo, or run this on a local machine!",
         )
     elif (hash_file(structure_file) not in EXAMPLE_FILE_HASHES) and (
-        "login_button_value" not in login_button_value
+        "Logout" not in login_button_value
     ):
         return (
             gr.Button(interactive=False),
             gr.Button(interactive=False),
-            "You must login to huggingface to use a custom structure!",
+            """
+To use your own structures, you need access to the [gated UMA model repository](https://huggingface.co/facebook/UMA) and you need to login with the button above. See the final tab above '3. Try UMA with your own structures!' for more details and debugging steps!
+                            
+Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved. 
+""",
         )
     else:
         return (
