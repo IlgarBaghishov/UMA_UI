@@ -218,339 +218,462 @@ def main():
     As you try each one, look at how the inputs change below, and the simulation outputs change on the right. Feel free to try changing some of the settings below and re-run the simulations to see how the results can vary.
     """
                         )
-                        gr.Examples(
-                            examples=[
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/metal_cplx.pdb"
-                                    ),
-                                    100,
-                                    20,
-                                    1.0,
-                                    300.0,
-                                    "NVE",
-                                    "OMol",
-                                    1,
-                                    6,
-                                    "This metal complex showcases the UMA's ability to handle complicated transition metal complexes with ligands, spin, and charge.",
-                                ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/organic_molecular_crystal.cif"
-                                    ),
-                                    200,
-                                    20,
-                                    1.0,
-                                    300.0,
-                                    "NVE",
-                                    "OMC",
-                                    0,
-                                    1,
-                                    "This organic crystal showcases the UMA's ability to handle organic molecular crystals using the OMC task, using a random packing of a molecule from OE62. You could also try using the OMol or OMat tasks and see how the simulations differ!",
-                                ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/inorganic_crystal.cif"
-                                    ),
-                                    200,
-                                    20,
-                                    1.0,
-                                    300.0,
-                                    "NVE",
-                                    "OMat",
-                                    0,
-                                    1,
-                                    "This inorganic crystal from the Materials Project showcases the UMA's ability to handle inorganic materials using the OMat task. You should be careful with the output energies since the analysis might require careful application of the Materials Project GGA/GGA+U correction schemes.",
-                                ],
-                                [
-                                    str(Path(__file__).parent / "./examples/HEA.cif"),
-                                    200,
-                                    20,
-                                    1.0,
-                                    300.0,
-                                    "NVE",
-                                    "OMat",
-                                    0,
-                                    1,
-                                    "High-entropy alloys are materials with 4 or more elements, and this example shows the OMat model can also be applied to HEAs. This particular HEA is equimolar Cr/Fe/Ni/Sn, but could exist in other lattice configurations. ",
-                                ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/catalyst.traj"
-                                    ),
-                                    200,
-                                    20,
-                                    1.0,
-                                    300.0,
-                                    "NVE",
-                                    "OC20",
-                                    0,
-                                    1,
-                                    "This example shows the OC20 model can be applied to small molecules on a catalyst surface, and that OC20 has recently been extended with datasets for multi-adsorbate interactions. Notice some of the adsorbates wrap around the periodic boundary conditions. Some of the adsorbates are weakly bound and desorbing from the surface based on this starting configuration.",
-                                ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/gold_nanoparticle_crystal.cif"
-                                    ),
-                                    200,
-                                    20,
-                                    1.0,
-                                    300.0,
-                                    "NVE",
-                                    "OMat",
-                                    0,
-                                    1,
-                                    "This example is an experimentally solved crystal structure for a thiolate protected gold nanocluster from an[open-access academic paper](https://pubs.rsc.org/en/content/articlelanding/2016/sc/c5sc02134k) and [available in the COD](https://www.crystallography.net/cod/1540567.html). This is a fun example because it combines small molecules, inorganic materials, and surface chemistry, so it's not so clear which task to use. Try the OMat, OMol, and OC20 tasks to see how the results differ! Further, the experimental paper reported different crystal structures based on the charge and spin multiplicity, so try changing the charge and spin multiplicity to see how the results differ.",
-                                ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/ethylene_carbonate.xyz"
-                                    ),
-                                    500,
-                                    20,
-                                    1.0,
-                                    1000.0,
-                                    "NVE",
-                                    "OMol",
-                                    0,
-                                    1,
-                                    "Ethylene carbonate is a common electrolyte in batteries, and an important precursor to the solid/electrolyte interface (SEI) formation. This example is the neutral version of ethylene carbonate and it is quite stable even at high temperatures! Try the radical anion version of ethylene carbonate in the next example.",
-                                ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/ethylene_carbonate.xyz"
-                                    ),
-                                    500,
-                                    20,
-                                    1.0,
-                                    1000.0,
-                                    "NVE",
-                                    "OMol",
-                                    -1,
-                                    2,
-                                    "With charge of -1 and spin multiplicity of 2, this radical anion version of ethylene carbonate is much less stable than the neutral version and can undergo spontaneous ring-opening at high temperatures, which initiates the formation of a battery's solid/electrolyte interface (SEI). If the simulation doesn't show a ring opening reaction, try clicking the molecular dynamic buttons again to see another short simulation. Only OMol currently supports arbitrary charge/spin multiplicity.",
-                                ],
-                                [
-                                    str(
-                                        Path(__file__).parent / "./examples/protein.pdb"
-                                    ),
-                                    200,
-                                    20,
-                                    1.0,
-                                    300.0,
-                                    "NVE",
-                                    "OMol",
-                                    0,
-                                    1,
-                                    "This is a solvated structure of a small protein fragment using the OMol task. Very little is likely happen in a very short MD simulations. Try increasing the number of MD steps to see how the protein moves. You can also try using the OMat task, but be careful with the results since the OMat task is not trained on solvated systems.",
-                                ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/MOF_CO2.traj"
-                                    ),
-                                    200,
-                                    20,
-                                    1.0,
-                                    300.0,
-                                    "NVE",
-                                    "ODAC",
-                                    0,
-                                    1,
-                                    "This is a metal organic framework (MOF) structure using the ODac task. You might study structures like if designing MOFs for direct air capture calculations. Look carefully for the red/gray CO2 molecule in the pores of the MOF! You can also try the OMol and OMat tasks to see if the results differ.",
-                                ],
-                            ],
-                            example_labels=[
-                                "Transition metal complex",
-                                "Organic molecular crystal",
-                                "Inorganic crystal",
-                                "High-entropy alloy",
-                                "Catalyst surface/adsorbate",
-                                "Ligated gold nanoparticle crystal",
-                                "Neutral ethylene carbonate",
-                                "Radical anion ethylene carbonate",
-                                "Solvated protein",
-                                "CO2 in a metal organic framework",
-                            ],
-                            inputs=[
-                                input_structure,
-                                md_steps,
-                                prerelax_steps,
-                                md_timestep,
-                                temperature_k,
-                                md_ensemble,
-                                task_name,
-                                total_charge,
-                                spin_multiplicity,
-                                explanation_buffer,
-                            ],
-                            outputs=[
-                                output_traj,
-                                output_text,
-                                reproduction_script,
-                                explanation,
-                            ],
-                            fn=run_md_simulation,
-                            run_on_click=True,
-                            cache_examples=True,
-                            label="Molecular Dynamics Examples",
-                        )
 
-                        gr.Examples(
-                            examples=[
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/bis(EDA)Cu.xyz"
-                                    ),
-                                    300,
-                                    0.05,
-                                    "OMol",
-                                    1,
-                                    1,
-                                    False,
-                                    "This is a super fun example of a transition metal complex that changes its geometry based on the assumed charge/spin multiplicity and actually has different local minima. It highlights the ability of the OMol task to handle these additional inputs. In this first example it forms a tetragonal geometry - try clicking on the next example (with charge=+2 and spin multiplicity 2) to see the other local minima!",
+                        with gr.Accordion(
+                            "UMA can handle many different materials/chemical structures!",
+                            open=True,
+                        ):
+                            gr.Examples(
+                                examples=[
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/metal_cplx.pdb"
+                                        ),
+                                        100,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMol",
+                                        1,
+                                        6,
+                                        "This metal complex showcases the UMA's ability to handle complicated transition metal complexes with ligands, spin, and charge.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/organic_molecular_crystal.cif"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMC",
+                                        0,
+                                        1,
+                                        "This organic crystal showcases the UMA's ability to handle organic molecular crystals using the OMC task, using a random packing of a molecule from OE62. You could also try using the OMol or OMat tasks and see how the simulations differ!",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/inorganic_crystal.cif"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMat",
+                                        0,
+                                        1,
+                                        "This inorganic crystal from the Materials Project showcases the UMA's ability to handle inorganic materials using the OMat task. You should be careful with the output energies since the analysis might require careful application of the Materials Project GGA/GGA+U correction schemes.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent / "./examples/HEA.cif"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMat",
+                                        0,
+                                        1,
+                                        "High-entropy alloys are materials with 4 or more elements, and this example shows the OMat model can also be applied to HEAs. This particular HEA is equimolar Cr/Fe/Ni/Sn, but could exist in other lattice configurations. ",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/catalyst.traj"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OC20",
+                                        0,
+                                        1,
+                                        "This example shows the OC20 model can be applied to small molecules on a catalyst surface, and that OC20 has recently been extended with datasets for multi-adsorbate interactions. Notice some of the adsorbates wrap around the periodic boundary conditions. Some of the adsorbates are weakly bound and desorbing from the surface based on this starting configuration.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/gold_nanoparticle_crystal.cif"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMat",
+                                        0,
+                                        1,
+                                        "This example is an experimentally solved crystal structure for a thiolate protected gold nanocluster from an[open-access academic paper](https://pubs.rsc.org/en/content/articlelanding/2016/sc/c5sc02134k) and [available in the COD](https://www.crystallography.net/cod/1540567.html). This is a fun example because it combines small molecules, inorganic materials, and surface chemistry, so it's not so clear which task to use. Try the OMat, OMol, and OC20 tasks to see how the results differ! Further, the experimental paper reported different crystal structures based on the charge and spin multiplicity, so try changing the charge and spin multiplicity to see how the results differ.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/ethylene_carbonate.xyz"
+                                        ),
+                                        500,
+                                        20,
+                                        1.0,
+                                        1000.0,
+                                        "NVE",
+                                        "OMol",
+                                        0,
+                                        1,
+                                        "Ethylene carbonate is a common electrolyte in batteries, and an important precursor to the solid/electrolyte interface (SEI) formation. This example is the neutral version of ethylene carbonate and it is quite stable even at high temperatures! Try the radical anion version of ethylene carbonate in the next example.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/protein.pdb"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMol",
+                                        0,
+                                        1,
+                                        "This is a solvated structure of a small protein fragment using the OMol task. Very little is likely happen in a very short MD simulations. Try increasing the number of MD steps to see how the protein moves. You can also try using the OMat task, but be careful with the results since the OMat task is not trained on solvated systems.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/MOF_CO2.traj"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "ODAC",
+                                        0,
+                                        1,
+                                        "This is a metal organic framework (MOF) structure using the ODac task. You might study structures like if designing MOFs for direct air capture calculations. Look carefully for the red/gray CO2 molecule in the pores of the MOF! You can also try the OMol and OMat tasks to see if the results differ.",
+                                    ],
                                 ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/bis(EDA)Cu.xyz"
-                                    ),
-                                    300,
-                                    0.05,
-                                    "OMol",
-                                    2,
-                                    2,
-                                    False,
-                                    "This is a super fun example of a transition metal complex that changes its geometry based on the assumed charge/spin multiplicity and actually has different local minima. In contrast to the previous example (charge=+1 and spin multiplicity 1), this one forms a square planar geometry.",
+                                example_labels=[
+                                    "Transition metal complex",
+                                    "Organic molecular crystal",
+                                    "Inorganic crystal",
+                                    "High-entropy alloy",
+                                    "Catalyst surface/adsorbate",
+                                    "Ligated gold nanoparticle crystal",
+                                    "Neutral ethylene carbonate",
+                                    "Solvated protein",
+                                    "CO2 in a metal organic framework",
                                 ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/metal_cplx.pdb"
-                                    ),
-                                    300,
-                                    0.05,
-                                    "OMol",
-                                    1,
-                                    6,
-                                    False,
-                                    "This metal complex showcases the UMA's ability to handle complicated transition metal complexes with ligands, spin, and charge.",
+                                inputs=[
+                                    input_structure,
+                                    md_steps,
+                                    prerelax_steps,
+                                    md_timestep,
+                                    temperature_k,
+                                    md_ensemble,
+                                    task_name,
+                                    total_charge,
+                                    spin_multiplicity,
+                                    explanation_buffer,
                                 ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/organic_molecular_crystal.cif"
-                                    ),
-                                    300,
-                                    0.05,
-                                    "OMC",
-                                    0,
-                                    1,
-                                    True,
-                                    "This organic crystal showcases the UMA's ability to handle organic molecular crystals using the OMC task, using a random packing of a molecule from OE62. You could also try using the OMol or OMat tasks and see how the simulations differ!",
+                                outputs=[
+                                    output_traj,
+                                    output_text,
+                                    reproduction_script,
+                                    explanation,
                                 ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/inorganic_crystal.cif"
-                                    ),
-                                    300,
-                                    0.05,
-                                    "OMat",
-                                    0,
-                                    1,
-                                    True,
-                                    "This inorganic crystal from the Materials Project showcases the UMA's ability to handle inorganic materials using the OMat task. You should be careful with the output energies since the analysis might require careful application of the Materials Project GGA/GGA+U correction schemes.",
+                                fn=run_md_simulation,
+                                run_on_click=True,
+                                cache_examples=True,
+                                label="Molecular Dynamics Examples",
+                            )
+
+                        with gr.Accordion(
+                            "UMA with OMol head can handle complex charge and spin multiplicity!",
+                            open=False,
+                        ):
+                            gr.Examples(
+                                examples=[
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/ethylene_carbonate.xyz"
+                                        ),
+                                        500,
+                                        20,
+                                        1.0,
+                                        1000.0,
+                                        "NVE",
+                                        "OMol",
+                                        0,
+                                        1,
+                                        "Ethylene carbonate is a common electrolyte in batteries, and an important precursor to the solid/electrolyte interface (SEI) formation. This example is the neutral version of ethylene carbonate and it is quite stable even at high temperatures! Try the radical anion version of ethylene carbonate in the next example.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/ethylene_carbonate.xyz"
+                                        ),
+                                        500,
+                                        20,
+                                        1.0,
+                                        1000.0,
+                                        "NVE",
+                                        "OMol",
+                                        -1,
+                                        2,
+                                        "With charge of -1 and spin multiplicity of 2, this radical anion version of ethylene carbonate is much less stable than the neutral version and can undergo spontaneous ring-opening at high temperatures, which initiates the formation of a battery's solid/electrolyte interface (SEI). If the simulation doesn't show a ring opening reaction, try clicking the molecular dynamic buttons again to see another short simulation. Only OMol currently supports arbitrary charge/spin multiplicity.",
+                                    ],
                                 ],
-                                [
-                                    str(Path(__file__).parent / "./examples/HEA.cif"),
-                                    300,
-                                    0.05,
-                                    "OMat",
-                                    0,
-                                    1,
-                                    True,
-                                    "High-entropy alloys are materials with 4 or more elements, and this example shows the OMat model can also be applied to HEAs. This particular HEA is equimolar Cr/Fe/Ni/Sn, but could exist in other lattice configurations. ",
+                                example_labels=[
+                                    "Neutral ethylene carbonate",
+                                    "Radical anion ethylene carbonate",
                                 ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/catalyst.traj"
-                                    ),
-                                    300,
-                                    0.05,
-                                    "OC20",
-                                    0,
-                                    1,
-                                    False,
-                                    "This example shows the OC20 model can be applied to small molecules on a catalyst surface, and that OC20 has recently been extended with datasets for multi-adsorbate interactions. Notice some of the adsorbates wrap around the periodic boundary conditions. Some of the adsorbates are weakly bound and desorbing from the surface based on this starting configuration.",
+                                inputs=[
+                                    input_structure,
+                                    md_steps,
+                                    prerelax_steps,
+                                    md_timestep,
+                                    temperature_k,
+                                    md_ensemble,
+                                    task_name,
+                                    total_charge,
+                                    spin_multiplicity,
+                                    explanation_buffer,
                                 ],
-                                [
-                                    str(
-                                        Path(__file__).parent / "./examples/protein.pdb"
-                                    ),
-                                    300,
-                                    0.05,
-                                    "OMol",
-                                    0,
-                                    1,
-                                    True,
-                                    "This is a solvated structure of a small protein fragment using the OMol task. Very little is likely happen in a very short MD simulations. Try increasing the number of MD steps to see how the protein moves. You can also try using the OMat task, but be careful with the results since the OMat task is not trained on solvated systems.",
+                                outputs=[
+                                    output_traj,
+                                    output_text,
+                                    reproduction_script,
+                                    explanation,
                                 ],
-                                [
-                                    str(
-                                        Path(__file__).parent
-                                        / "./examples/porous_CO2_2H2O.traj"
-                                    ),
-                                    300,
-                                    0.05,
-                                    "ODAC",
-                                    0,
-                                    1,
-                                    False,
-                                    "This is a porous material similar to a zeolite using the ODac task. You might study structures like if designing materials for direct air capture (DAC) calculations. Look carefully for the co-adsorption between CO2 and two water molecules in the pore, which you might study if you were interested in the effect of humidity on DAC performance! You can also try the OMol and OMat tasks to see if the results differ.",
+                                fn=run_md_simulation,
+                                run_on_click=True,
+                                cache_examples=True,
+                                label="Molecular Dynamics Examples",
+                            )
+
+                            gr.Examples(
+                                examples=[
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/bis(EDA)Cu.xyz"
+                                        ),
+                                        300,
+                                        0.05,
+                                        "OMol",
+                                        1,
+                                        1,
+                                        False,
+                                        "This is a super fun example of a transition metal complex that changes its geometry based on the assumed charge/spin multiplicity and actually has different local minima. It highlights the ability of the OMol task to handle these additional inputs. In this first example it forms a tetragonal geometry - try clicking on the next example (with charge=+2 and spin multiplicity 2) to see the other local minima!",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/bis(EDA)Cu.xyz"
+                                        ),
+                                        300,
+                                        0.05,
+                                        "OMol",
+                                        2,
+                                        2,
+                                        False,
+                                        "This is a super fun example of a transition metal complex that changes its geometry based on the assumed charge/spin multiplicity and actually has different local minima. In contrast to the previous example (charge=+1 and spin multiplicity 1), this one forms a square planar geometry.",
+                                    ],
                                 ],
-                            ],
-                            example_labels=[
-                                "bis(EDA)Cu TM complex with charge=1, spin=1",
-                                "bis(EDA)Cu TM complex with charge=2, spin=2",
-                                "Transition metal complex w ligands",
-                                "Organic molecular crystal",
-                                "Inorganic crystal",
-                                "High-entropy alloy",
-                                "Catalyst surface/adsorbate",
-                                "Solvated protein",
-                                "Co-adsorbed H2O/CO2 in a porous material",
-                            ],
-                            inputs=[
-                                input_structure,
-                                optimization_steps,
-                                fmax,
-                                task_name,
-                                total_charge,
-                                spin_multiplicity,
-                                relax_unit_cell,
-                                explanation_buffer,
-                            ],
-                            outputs=[
-                                output_traj,
-                                output_text,
-                                reproduction_script,
-                                explanation,
-                            ],
-                            fn=run_relaxation_simulation,
-                            run_on_click=True,
-                            cache_examples=True,
-                            label="Relaxation examples!",
-                        )
+                                example_labels=[
+                                    "bis(EDA)Cu TM complex with charge=1, spin=1",
+                                    "bis(EDA)Cu TM complex with charge=2, spin=2",
+                                ],
+                                inputs=[
+                                    input_structure,
+                                    optimization_steps,
+                                    fmax,
+                                    task_name,
+                                    total_charge,
+                                    spin_multiplicity,
+                                    relax_unit_cell,
+                                    explanation_buffer,
+                                ],
+                                outputs=[
+                                    output_traj,
+                                    output_text,
+                                    reproduction_script,
+                                    explanation,
+                                ],
+                                fn=run_relaxation_simulation,
+                                run_on_click=True,
+                                cache_examples=True,
+                                label="Relaxation examples!",
+                            )
+                        with gr.Accordion(
+                            "UMA can use different output heads for the same structures", open=False
+                        ):
+                            gr.Examples(
+                                examples=[
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/organic_molecular_crystal.cif"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMC",
+                                        0,
+                                        1,
+                                        "This organic crystal showcases the UMA's ability to handle organic molecular crystals using the OMC task, using a random packing of a molecule from OE62. You could also try using the OMol or OMat tasks and see how the simulations differ!",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/organic_molecular_crystal.cif"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMol",
+                                        0,
+                                        1,
+                                        "This organic crystal showcases the UMA's ability to handle organic molecular crystals using the OMol task, using a random packing of a molecule from OE62. You could also try using the OMol or OMat tasks and see how the simulations differ!",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/gold_nanoparticle_crystal.cif"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMol",
+                                        0,
+                                        1,
+                                        "This example is an experimentally solved crystal structure for a thiolate protected gold nanocluster from an[open-access academic paper](https://pubs.rsc.org/en/content/articlelanding/2016/sc/c5sc02134k) and [available in the COD](https://www.crystallography.net/cod/1540567.html). This is a fun example because it combines small molecules, inorganic materials, and surface chemistry, so it's not so clear which task to use. Try the OMat, OMol, and OC20 tasks to see how the results differ! Further, the experimental paper reported different crystal structures based on the charge and spin multiplicity, so try changing the charge and spin multiplicity to see how the results differ.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/gold_nanoparticle_crystal.cif"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMat",
+                                        0,
+                                        1,
+                                        "This example is an experimentally solved crystal structure for a thiolate protected gold nanocluster from an[open-access academic paper](https://pubs.rsc.org/en/content/articlelanding/2016/sc/c5sc02134k) and [available in the COD](https://www.crystallography.net/cod/1540567.html). This is a fun example because it combines small molecules, inorganic materials, and surface chemistry, so it's not so clear which task to use. Try the OMat, OMol, and OC20 tasks to see how the results differ! Further, the experimental paper reported different crystal structures based on the charge and spin multiplicity, so try changing the charge and spin multiplicity to see how the results differ.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/gold_nanoparticle_crystal.cif"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OC20",
+                                        0,
+                                        1,
+                                        "This example is an experimentally solved crystal structure for a thiolate protected gold nanocluster from an[open-access academic paper](https://pubs.rsc.org/en/content/articlelanding/2016/sc/c5sc02134k) and [available in the COD](https://www.crystallography.net/cod/1540567.html). This is a fun example because it combines small molecules, inorganic materials, and surface chemistry, so it's not so clear which task to use. Try the OMat, OMol, and OC20 tasks to see how the results differ! Further, the experimental paper reported different crystal structures based on the charge and spin multiplicity, so try changing the charge and spin multiplicity to see how the results differ.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/MOF_CO2.traj"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMol",
+                                        0,
+                                        1,
+                                        "This is a metal organic framework (MOF) structure using the ODac task. You might study structures like if designing MOFs for direct air capture calculations. Look carefully for the red/gray CO2 molecule in the pores of the MOF! You can also try the OMol and OMat tasks to see if the results differ.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/MOF_CO2.traj"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "ODAC",
+                                        0,
+                                        1,
+                                        "This is a metal organic framework (MOF) structure using the ODac task. You might study structures like if designing MOFs for direct air capture calculations. Look carefully for the red/gray CO2 molecule in the pores of the MOF! You can also try the OMol and OMat tasks to see if the results differ.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/MOF_CO2.traj"
+                                        ),
+                                        200,
+                                        20,
+                                        1.0,
+                                        300.0,
+                                        "NVE",
+                                        "OMat",
+                                        0,
+                                        1,
+                                        "This is a metal organic framework (MOF) structure using the ODac task. You might study structures like if designing MOFs for direct air capture calculations. Look carefully for the red/gray CO2 molecule in the pores of the MOF! You can also try the OMol and OMat tasks to see if the results differ.",
+                                    ],
+                                ],
+                                example_labels=[
+                                    "Organic crystal with OMol task",
+                                    "Organic crystal with OMC task",
+                                    "Ligated nanoparticle with OMol",
+                                    "Ligated nanoparticle  with OMat",
+                                    "Ligated nanoparticle  with OC20",
+                                    "CO2 in a MOF with OMol",
+                                    "CO2 in a MOF with ODAC",
+                                    "CO2 in a MOF with OMat",
+                                ],
+                                inputs=[
+                                    input_structure,
+                                    md_steps,
+                                    prerelax_steps,
+                                    md_timestep,
+                                    temperature_k,
+                                    md_ensemble,
+                                    task_name,
+                                    total_charge,
+                                    spin_multiplicity,
+                                    explanation_buffer,
+                                ],
+                                outputs=[
+                                    output_traj,
+                                    output_text,
+                                    reproduction_script,
+                                    explanation,
+                                ],
+                                fn=run_md_simulation,
+                                run_on_click=True,
+                                cache_examples=True,
+                                label="Molecular Dynamics Examples",
+                            )
+
 
                         gr.Markdown(
                             """
