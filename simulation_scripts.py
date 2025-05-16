@@ -42,7 +42,9 @@ MAX_ATOMS = os.environ.get("MAX_ATOMS", 2000)
 INFERENCE_ENDPOINT_URL = os.environ["INFERENCE_ENDPOINT_URL"]
 
 
-def validate_ase_atoms_and_login(structure_file, login_button_value):
+def validate_ase_atoms_and_login(
+    structure_file: dict | str, login_button_value: str
+) -> tuple[gr.Button, gr.Button, str]:
     # Validate and write the uploaded file content
     if not structure_file:
         return (
@@ -50,6 +52,9 @@ def validate_ase_atoms_and_login(structure_file, login_button_value):
             gr.Button(interactive=False),
             "Missing input structure!",
         )
+
+    if isinstance(structure_file, dict):
+        structure_file = structure_file["path"]
 
     try:
         atoms = ase.io.read(structure_file)
