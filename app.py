@@ -929,8 +929,6 @@ def main():
             ],
             outputs=[output_traj, output_text, reproduction_script, explanation],
             scroll_to_output=True,
-            concurrency_limit=16,
-            concurrency_id="simulation_queue",
         )
         optimization_button.click(
             run_relaxation_simulation,
@@ -945,7 +943,6 @@ def main():
             ],
             outputs=[output_traj, output_text, reproduction_script, explanation],
             scroll_to_output=True,
-            concurrency_id="simulation_queue",
         )
 
         # Change the tab based on the current task name
@@ -985,6 +982,7 @@ def main():
             outputs=[optimization_button, md_button, structure_validation],
         )
 
+    demo.queue(default_concurrency_limit=16)
     demo.launch()
 
 
