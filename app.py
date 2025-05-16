@@ -984,7 +984,7 @@ def main():
             outputs=[optimization_button, md_button, structure_validation],
         )
 
-        login_button.change(
+        login_button.click(
             validate_ase_atoms_and_login,
             inputs=[input_structure, login_button],
             outputs=[optimization_button, md_button, structure_validation],
