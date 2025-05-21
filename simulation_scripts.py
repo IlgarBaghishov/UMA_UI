@@ -233,7 +233,7 @@ from ase.optimize import LBFGS
 from ase.io.trajectory import Trajectory
 from ase.md import MDLogger
 from ase import units
-from fairchem.core.common.calculator import FAIRChemCalculator
+from fairchem.core import pretrained_mlip, FAIRChemCalculator
 
 # Read the atoms object from ASE read-able file
 atoms = ase.io.read('input_file.traj')
@@ -243,7 +243,8 @@ atoms.info["charge"] = {total_charge}
 atoms.info["spin"] = {spin_multiplicity}
 
 # Set up the calculator
-atoms.calc = FAIRChemCalculator(name='UMA-SM-Final', hf_hub_repo_id='facebook/UMA', hf_hub_filename = 'UMA-SM-Final', task_name='{task_name}')
+predictor = pretrained_mlip.get_predict_unit('uma-sm', device='cuda')
+atoms.calc = FAIRChemCalculator(predictor, task_name='{task_name}')
 
 # Do a quick pre-relaxation to make sure the system is stable
 opt = LBFGS(atoms, trajectory="relaxation_output.traj")
@@ -360,7 +361,7 @@ def run_relaxation_simulation(
 import ase.io
 from ase.optimize import LBFGS
 from ase.filters import FrechetCellFilter
-from fairchem.core.common.calcaulator import FAIRChemCalculator
+from fairchem.core import pretrained_mlip, FAIRChemCalculator
 
 # Read the atoms object from ASE read-able file
 atoms = ase.io.read('input_file.traj')
@@ -370,7 +371,8 @@ atoms.info["charge"] = {total_charge}
 atoms.info["spin"] = {spin_multiplicity}
 
 # Set up the calculator
-atoms.calc = FAIRChemCalculator(name='UMA-SM-Final', hf_hub_repo_id='facebook/UMA', hf_hub_filename = 'UMA-SM-Final', task_name='{task_name}')
+predictor = pretrained_mlip.get_predict_unit('uma-sm', device='cuda')
+atoms.calc = FAIRChemCalculator(predictor, task_name='{task_name}')
 
 # Initialize the optimizer from ASE
 relax_unit_cell = {relax_unit_cell}
