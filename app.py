@@ -983,7 +983,7 @@ def main():
         )
 
     demo.queue(default_concurrency_limit=16)
-    demo.launch()
+    demo.launch(ssr_mode=False)
 
 
 if __name__ == "__main__":
