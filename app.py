@@ -100,8 +100,8 @@ def main():
     )
     relax_unit_cell = gr.Checkbox(value=False, label="Relax Unit Cell")
 
-    md_button = gr.Button("Run MD Simulation", interactive=False)
-    optimization_button = gr.Button("Run Optimization", interactive=False)
+    md_button = gr.Button("Run MD Simulation", interactive=True)
+    optimization_button = gr.Button("Run Optimization", interactive=True)
 
     output_structure = Molecule3D(
         label="Simulation Visualization",
