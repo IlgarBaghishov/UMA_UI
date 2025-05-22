@@ -977,7 +977,7 @@ def main():
             outputs=[optimization_button, md_button, structure_validation],
         )
 
-    demo.queue(default_concurrency_limit=16)
+    demo.queue(default_concurrency_limit=None)
     demo.launch(ssr_mode=False)
 
 
