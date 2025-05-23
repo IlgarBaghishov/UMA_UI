@@ -958,17 +958,12 @@ def main():
         # Only show charge/spin inputs for OMol task
         task_name.input(
             lambda x: (
-                gr.Number(visible=True) if x == "OMol" else gr.Number(visible=False)
+                (gr.Number(visible=True), gr.Number(visible=True))
+                if x == "OMol"
+                else (gr.Number(visible=False), gr.Number(visible=False))
             ),
             [task_name],
-            total_charge,
-        )
-        task_name.input(
-            lambda x: (
-                gr.Number(visible=True) if x == "OMol" else gr.Number(visible=False)
-            ),
-            [task_name],
-            spin_multiplicity,
+            [total_charge, spin_multiplicity],
         )
 
         input_structure.change(
