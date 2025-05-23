@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING, Any, Callable, Literal, Sequence
 
 import gradio_client.utils as client_utils
 from gradio_client import handle_file
-from gradio_client.documentation import document
 
+import gradio as gr
 from gradio import processing_utils
 from gradio.components.base import Component
 from gradio.data_classes import FileData, ListFiles
@@ -107,7 +107,7 @@ def convert_file_to_pdb(file_path: str | Path, gradio_cache: str | Path) -> str:
         structures = ase.io.read(file_path, ':')
     except Exception as e:
         # Bad upload structure, no need to visualize
-        return None
+        raise gr.Error(f'Error parsing file with ase: {str(e)}')
 
     if all(structures[0].pbc):
         # find the minimum number of repeats in each unit cell direction to meet at least 20 angstroms
@@ -322,11 +322,14 @@ class Molecule3D(Component):
             )
         else:
             value = convert_file_to_pdb(str(value), self.GRADIO_CACHE)
-            return FileData(
-                path=value,
-                orig_name=Path(value).name,
-                size=Path(value).stat().st_size,
-            )
+            if value is not None:
+                return FileData(
+                    path=value,
+                    orig_name=Path(value).name,
+                    size=Path(value).stat().st_size,
+                )
+            else:
+                return None
 
     def process_example(self, value: str | list | None) -> str:
         if value is None:

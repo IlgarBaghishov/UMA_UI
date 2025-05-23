@@ -12,11 +12,8 @@ from pathlib import Path
 
 import gradio as gr
 
-from simulation_scripts import (
-    run_md_simulation,
-    run_relaxation_simulation,
-    validate_ase_atoms_and_login,
-)
+from simulation_scripts import (run_md_simulation, run_relaxation_simulation,
+                                validate_ase_atoms_and_login)
 
 DEFAULT_MOLECULAR_REPRESENTATIONS = [
     {

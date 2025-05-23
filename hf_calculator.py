@@ -29,6 +29,14 @@ def hash_save_file(atoms: ase.Atoms, task_name, path: Path | str):
     return
 
 
+def validate_uma_access(oauth_token):
+    try:
+        hf_hub.HfApi().auth_check(repo_id="facebook/UMA", token=oauth_token.token)
+        return True
+    except (hf_hub.errors.HfHubHTTPError, AttributeError):
+        return False
+
+
 class HFEndpointCalculator(Calculator):
     # A simple calculator that uses the Hugging Face Inference Endpoints to run
 
@@ -47,15 +55,12 @@ class HFEndpointCalculator(Calculator):
         # If we have an example structure, we don't need to check for authentication
         # Otherwise, we need to check if the user is authenticated and has gated access to the UMA models
         if not example:
-            try:
-                hf_hub.HfApi().auth_check(
-                    repo_id="facebook/UMA", token=oauth_token.token
-                )
+            if validate_uma_access(oauth_token):
                 try:
                     hash_save_file(atoms, task_name, "/data/custom_inputs/")
                 except FileNotFoundError:
                     pass
-            except (hf_hub.errors.HfHubHTTPError, AttributeError):
+            else:
                 raise gr.Error(
                     "You need to log in to HF and have gated model access to UMA before running your own simulations!"
                 )

@@ -23,7 +23,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.verlet import VelocityVerlet
 from ase.optimize import LBFGS
 
-from hf_calculator import HFEndpointCalculator
+from hf_calculator import HFEndpointCalculator, validate_uma_access
 
 
 def hash_file(file_path):
@@ -43,7 +43,9 @@ INFERENCE_ENDPOINT_URL = os.environ["INFERENCE_ENDPOINT_URL"]
 
 
 def validate_ase_atoms_and_login(
-    structure_file: dict | str, login_button_value: str
+    structure_file: dict | str,
+    login_button_value: str,
+    oauth_token: gr.OAuthToken | None,
 ) -> tuple[gr.Button, gr.Button, str]:
     # Validate and write the uploaded file content
     if not structure_file:
@@ -84,7 +86,8 @@ def validate_ase_atoms_and_login(
             f"Structure file contains {len(atoms)}, which is more than {MAX_ATOMS} atoms. Please use a smaller structure for this demo, or run this on a local machine!",
         )
     elif (hash_file(structure_file) not in EXAMPLE_FILE_HASHES) and (
-        "Logout" not in login_button_value
+        ("Logout" not in login_button_value)
+        or not validate_uma_access(oauth_token=oauth_token)
     ):
         return (
             gr.Button(interactive=False),
