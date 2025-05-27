@@ -86,8 +86,7 @@ def validate_ase_atoms_and_login(
             f"Structure file contains {len(atoms)}, which is more than {MAX_ATOMS} atoms. Please use a smaller structure for this demo, or run this on a local machine!",
         )
     elif (hash_file(structure_file) not in EXAMPLE_FILE_HASHES) and (
-        ("Logout" not in login_button_value)
-        or not validate_uma_access(oauth_token=oauth_token)
+        (oauth_token is None) or not validate_uma_access(oauth_token=oauth_token)
     ):
         return (
             gr.Button(interactive=False),

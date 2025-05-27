@@ -12,8 +12,11 @@ from pathlib import Path
 
 import gradio as gr
 
-from simulation_scripts import (run_md_simulation, run_relaxation_simulation,
-                                validate_ase_atoms_and_login)
+from simulation_scripts import (
+    run_md_simulation,
+    run_relaxation_simulation,
+    validate_ase_atoms_and_login,
+)
 
 DEFAULT_MOLECULAR_REPRESENTATIONS = [
     {
@@ -47,7 +50,7 @@ DEFAULT_MOLECULAR_SETTINGS = {
 def main():
     input_structure = gr.File(
         label="ASE-compatible structure",
-        file_types=[".cif", ".pdb", ".xyz", ".traj", "INCAR", "POSCAR"],
+        file_types=[".cif", ".pdb", ".extxyz", ".xyz", ".traj"],
         height=150,
         value="./examples/metal_cplx.pdb",
     )
@@ -695,7 +698,7 @@ def main():
 
                             * Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved.
                             * If you get a redirect error when logging in, please try visiting the direct demo url in a new tab (https://facebook-fairchem-uma-demo.hf.space/) and try again
-                            * Your structure should be in a format supported by ASE 3.25, including .xyz, .cif, .pdb, ASE .traj, INCAR, or POSCAR.
+                            * Your structure should be in a format supported by ASE 3.25, including .xyz, .extxyz, .cif, .pdb, or ASE .traj.
                             * Your structure should either have periodic boundary conditions (PBC) all True, or all False. Support for mixed PBC may be added in the future. 
                             """
                         )
