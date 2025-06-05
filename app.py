@@ -680,6 +680,94 @@ def main():
                                 label="Molecular Dynamics Examples",
                             )
 
+                        with gr.Accordion(
+                            "UMA can be used for catalyst adsorption energies",
+                            open=False,
+                        ):
+                            gr.Markdown("[See the OC20 tutorials for how to use these energies!](https://fair-chem.github.io/catalysts/examples_tutorials/OCP-introduction.html)")
+                            gr.Examples(
+                                examples=[
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/pt111.traj"
+                                        ),
+                                        300,
+                                        0.05,
+                                        "OC20",
+                                        0,
+                                        1,
+                                        False,
+                                        "This is a bare Pt111 slab, with 4 layers.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/pt111_O.traj"
+                                        ),
+                                        300,
+                                        0.05,
+                                        "OC20",
+                                        0,
+                                        1,
+                                        False,
+                                        "This is a Pt111 slab with an O adsorbed.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/cu111.traj"
+                                        ),
+                                        300,
+                                        0.05,
+                                        "OC20",
+                                        0,
+                                        1,
+                                        False,
+                                        "This is a bare Cu111 slab, with 4 layers.",
+                                    ],
+                                    [
+                                        str(
+                                            Path(__file__).parent
+                                            / "./examples/cu111_O.traj"
+                                        ),
+                                        300,
+                                        0.05,
+                                        "OC20",
+                                        0,
+                                        1,
+                                        False,
+                                        "This is a Cu111 slab with an O adsorbed.",
+                                    ],
+                                ],
+                                example_labels=[
+                                    "Pt(111) slab",
+                                    "Pt(111)+*O adslab",
+                                    "Cu(111) slab",
+                                    "Cu(111)+*O adslab",
+                                ],
+                                inputs=[
+                                    input_structure,
+                                    optimization_steps,
+                                    fmax,
+                                    task_name,
+                                    total_charge,
+                                    spin_multiplicity,
+                                    relax_unit_cell,
+                                    explanation_buffer,
+                                ],
+                                outputs=[
+                                    output_traj,
+                                    output_text,
+                                    reproduction_script,
+                                    explanation,
+                                ],
+                                fn=run_relaxation_simulation,
+                                run_on_click=True,
+                                cache_examples=True,
+                                label="Catalyst examples!",
+                            )
+
                         gr.Markdown(
                             """
                             Once you understand how the UMA model can be applied to different types of molecules and materials, the final tab above will help you try it out with your own structures!
