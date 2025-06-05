@@ -690,7 +690,7 @@ def main():
                                     [
                                         str(
                                             Path(__file__).parent
-                                            / "./examples/pt111.traj"
+                                            / "./examples/pt111_slab.traj"
                                         ),
                                         300,
                                         0.05,
@@ -716,7 +716,7 @@ def main():
                                     [
                                         str(
                                             Path(__file__).parent
-                                            / "./examples/cu111.traj"
+                                            / "./examples/cu111_slab.traj"
                                         ),
                                         300,
                                         0.05,
