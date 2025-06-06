@@ -1,6 +1,5 @@
 gradio<5.30.0
 numpy
 ase
-
-# Pinned since huggingface_hub>=0.31 does not support custom inference endpoint posts
-huggingface_hub<0.31
+huggingface_hub
+backoff
