@@ -104,8 +104,6 @@ class HFEndpointCalculator(Calculator):
             "Content-Type": "application/json",
         }
 
-        print(payload)
-
         try:
             response = self._post_with_backoff(self.url, headers, payload)
             response_dict = response.json()
