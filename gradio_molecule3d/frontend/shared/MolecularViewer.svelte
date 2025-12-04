@@ -198,6 +198,7 @@
     }
   }
   function applyStyles(representations) {
+    // console.log("applyStyles called");
     if (view !== undefined) {
       view.setStyle();
       view.removeAllSurfaces();
@@ -258,15 +259,8 @@
       });
 
 
-      
-      // Re-apply selection highlight if exists
-      if (selectedAtom) {
-         try {
-             view.addStyle({model: selectedAtom.model, serial: selectedAtom.serial}, {sphere:{color:"#00FF00", radius: 0.5}});
-         } catch (e) {
-             console.log("Error applying selection style", e);
-         }
-      }
+      // Re-apply selection highlight using Shape
+      updateSelection();
 
       view.render();
     }
@@ -405,6 +399,22 @@
       }
     });
   }
+  
+  let selectionShape = null;
+
+  function updateSelection() {
+    if (selectionShape) {
+        view.removeShape(selectionShape);
+        selectionShape = null;
+    }
+    if (selectedAtom) {
+        selectionShape = view.addSphere({
+            center: {x: selectedAtom.x, y: selectedAtom.y, z: selectedAtom.z},
+            radius: 0.8,
+            color: "#00FF00"
+        });
+    }
+  }
   function toggleAnimation() {
     console.log(view.isAnimated());
     if (isAnimated) {
@@ -428,7 +438,7 @@
       atomStart = { x: atom.x, y: atom.y, z: atom.z };
       
       // Visual feedback: Highlight selected atom
-      view.addStyle({model: atom.model, serial: atom.serial}, {sphere:{color:"#00FF00", radius: 0.5}});
+      updateSelection();
       view.render();
       
       // Prevent 3Dmol from handling this event (e.g. rotation)
