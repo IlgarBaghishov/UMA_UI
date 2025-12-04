@@ -151,7 +151,6 @@ Any | None
     "backgroundColor": "white",
     "orthographic": False,
     "disableFog": False,
-    "unitCell": True,
 }</code></td>
 <td align="left">dictionary of config options</td>
 </tr>

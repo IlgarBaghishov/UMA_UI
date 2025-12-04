@@ -52,8 +52,11 @@ def main():
         label="ASE-compatible structure",
         file_types=[".cif", ".pdb", ".extxyz", ".xyz", ".traj"],
         height=150,
-        value="./examples/metal_cplx.pdb",
+        value="./examples/inorganic_crystal.cif",
     )
+    server_file_path = gr.Textbox(label="Server File Path", placeholder="/absolute/path/to/file.cif")
+    load_server_file_btn = gr.Button("Load from Server")
+
     output_traj = gr.File(
         label="Simulation Trajectory (ASE traj file)",
         interactive=False,
@@ -68,7 +71,7 @@ def main():
         value=lambda x: x,
         interactive=False,
     )
-    md_steps = gr.Slider(minimum=1, maximum=500, value=100, label="MD Steps")
+    md_steps = gr.Slider(minimum=1, maximum=500, value=200, label="MD Steps")
     prerelax_steps = gr.Slider(
         minimum=0, maximum=100, value=20, label="Pre-Relaxation Steps"
     )
@@ -88,7 +91,7 @@ def main():
     fmax = gr.Slider(value=0.05, minimum=0.001, maximum=0.5, label="Opt. Fmax [eV/Å]")
 
     task_name = gr.Radio(
-        value="OMol", choices=["OMol", "OMC", "OMat", "OC20", "ODAC"], label="Task Name"
+        value="OMat", choices=["OMol", "OMC", "OMat", "OC20", "ODAC"], label="Task Name"
     )
 
     gr.Markdown("OMol-specific settings for total charge and spin multiplicity")
@@ -204,7 +207,7 @@ def main():
                                 ],
                                 fn=run_md_simulation,
                                 run_on_click=True,
-                                cache_examples=True,
+                                cache_examples=False,
                                 label="Try an example!",
                             )
 
@@ -396,7 +399,7 @@ def main():
                                 ],
                                 fn=run_md_simulation,
                                 run_on_click=True,
-                                cache_examples=True,
+                                cache_examples=False,
                                 label="Molecular Dynamics Examples",
                             )
 
@@ -461,7 +464,7 @@ def main():
                                 ],
                                 fn=run_md_simulation,
                                 run_on_click=True,
-                                cache_examples=True,
+                                cache_examples=False,
                                 label="Molecular Dynamics Examples",
                             )
 
@@ -516,7 +519,7 @@ def main():
                                 ],
                                 fn=run_relaxation_simulation,
                                 run_on_click=True,
-                                cache_examples=True,
+                                cache_examples=False,
                                 label="Relaxation examples!",
                             )
                         with gr.Accordion(
@@ -676,7 +679,7 @@ def main():
                                 ],
                                 fn=run_md_simulation,
                                 run_on_click=True,
-                                cache_examples=True,
+                                cache_examples=False,
                                 label="Molecular Dynamics Examples",
                             )
 
@@ -764,7 +767,7 @@ def main():
                                 ],
                                 fn=run_relaxation_simulation,
                                 run_on_click=True,
-                                cache_examples=True,
+                                cache_examples=False,
                                 label="Catalyst examples!",
                             )
 
@@ -874,7 +877,9 @@ def main():
 
                             structure_validation = gr.Markdown()
 
-                            login_button = gr.LoginButton(size="large")
+                            with gr.Row():
+                                server_file_path.render()
+                                load_server_file_btn.render()
 
                         with gr.Column(scale=3):
                             input_visualization.render()
@@ -1056,16 +1061,22 @@ def main():
 
         input_structure.change(
             validate_ase_atoms_and_login,
-            inputs=[input_structure, login_button],
+            inputs=[input_structure],
             outputs=[optimization_button, md_button, structure_validation],
         )
 
+        load_server_file_btn.click(
+            lambda x: x,
+            inputs=[server_file_path],
+            outputs=[input_structure],
+        )
+
     demo.queue(default_concurrency_limit=None)
-    demo.launch(ssr_mode=False)
+    demo.launch(ssr_mode=False, server_name="0.0.0.0", server_port=7860, allowed_paths=[os.path.expanduser("~")])
 
 
 if __name__ == "__main__":
-    os.makedirs("/data/custom_inputs/errors", exist_ok=True)
+    os.makedirs("data/custom_inputs/errors", exist_ok=True)
 
     # On load, build and install the gradio_molecul3d fork
     subprocess.call(

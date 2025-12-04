@@ -47,6 +47,22 @@
 
   let showOffCanvas = false;
   let showOffCanvasReps = false;
+  let isEditing = false;
+  let selectedAtom = null;
+  let hoveredAtom = null;
+  let isDragging = false;
+  let dragStart = { x: 0, y: 0 };
+  let atomStart = { x: 0, y: 0, z: 0 };
+
+  function toggleEditMode() {
+    isEditing = !isEditing;
+    if (isEditing) {
+       // Optional: Visual cue or disable other interactions
+    } else {
+       selectedAtom = null;
+       isDragging = false;
+    }
+  }
 
   function toggleOffCanvas() {
     showOffCanvas = !showOffCanvas;
@@ -241,6 +257,17 @@
         }
       });
 
+
+      
+      // Re-apply selection highlight if exists
+      if (selectedAtom) {
+         try {
+             view.addStyle({model: selectedAtom.model, serial: selectedAtom.serial}, {sphere:{color:"#00FF00", radius: 0.5}});
+         } catch (e) {
+             console.log("Error applying selection style", e);
+         }
+      }
+
       view.render();
     }
   }
@@ -309,6 +336,7 @@
         {},
         true,
         function (atom, view, event, container) {
+          hoveredAtom = atom;
           if (!atom.label) {
             let label;
             if (anyColorAlphaFold) {
@@ -335,6 +363,7 @@
           }
         },
         function (atom, view) {
+          hoveredAtom = null;
           if (atom.label) {
             view.removeLabel(atom.label);
             delete atom.label;
@@ -385,6 +414,71 @@
     }
     isAnimated = !isAnimated;
   }
+
+  function handleMouseDown(event) {
+    if (!isEditing) return;
+    
+    const rect = viewer.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    console.log("MouseDown at", x, y);
+
+    // Pick atom using hoveredAtom state
+    const atom = hoveredAtom;
+    console.log("Picked atom (via hover):", atom);
+    if (atom) {
+        console.log("Atom details:", "Serial:", atom.serial, "Model:", atom.model, "Elem:", atom.elem);
+    }
+    
+    if (atom) {
+      selectedAtom = atom;
+      isDragging = true;
+      dragStart = { x: event.clientX, y: event.clientY };
+      atomStart = { x: atom.x, y: atom.y, z: atom.z };
+      
+      // Visual feedback: Highlight selected atom
+      // We call applyStyles here to ensure the highlight is applied initially
+      applyStyles(representations);
+      view.render();
+
+      // Prevent 3Dmol from handling this event (e.g. rotation)
+      event.stopPropagation();
+    }
+  }
+
+  function handleMouseMove(event) {
+    if (!isDragging || !selectedAtom) return;
+    
+    const dx = event.clientX - dragStart.x;
+    const dy = event.clientY - dragStart.y;
+    
+    const scale = 0.05; // Angstroms per pixel (approx)
+    
+    // TODO: Implement proper camera-plane dragging.
+    // For now, moving in World X/Y (which might not match screen X/Y if rotated).
+    // Ideally we project/unproject or use camera vectors.
+    const newX = atomStart.x + dx * scale;
+    const newY = atomStart.y - dy * scale;
+    
+    console.log("Dragging: dx/dy", dx, dy, "New Pos:", newX, newY);
+    
+    selectedAtom.x = newX;
+    selectedAtom.y = newY;
+    
+    // Re-apply styles to update geometry
+    // DEBUG: Commenting out applyStyles to see if it causes the disappearance.
+    // If the atom stays visible (but maybe doesn't move properly), then applyStyles is the issue.
+    // applyStyles(representations);
+    
+    // Try to just render. Note: This might not update the geometry if buffers aren't refreshed.
+    view.render();
+  }
+
+  function handleMouseUp() {
+    isDragging = false;
+    selectedAtom = null;
+  }
 </script>
 
 <div class="bg-white w-full minh">
@@ -406,6 +500,26 @@
               stroke-linecap="round"
               stroke-linejoin="round"
               d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25"
+            />
+          </svg>
+        </button>
+        <button
+          class="p-2"
+          title="Toggle Edit Mode"
+          on:click={toggleEditMode}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class={isEditing ? "w-5 h-5 text-orange-600 cursor-pointer" : "w-5 h-5 text-gray-500 hover:text-orange-600 cursor-pointer"}
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
             />
           </svg>
         </button>
@@ -636,7 +750,14 @@
         </span>
       </div>
 
-      <div class="viewer w-full h-full z-10" bind:this={viewer} />
+      <div 
+        class="viewer w-full h-full z-10" 
+        bind:this={viewer} 
+        on:mousedown|capture={handleMouseDown}
+        on:mousemove={handleMouseMove}
+        on:mouseup={handleMouseUp}
+        on:mouseleave={handleMouseUp}
+      />
 
       {#if showOffCanvas}
         <div

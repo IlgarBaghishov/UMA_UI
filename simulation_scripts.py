@@ -23,7 +23,8 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.verlet import VelocityVerlet
 from ase.optimize import LBFGS
 
-from hf_calculator import HFEndpointCalculator, validate_uma_access
+# from hf_calculator import HFEndpointCalculator, validate_uma_access
+from fairchem.core import pretrained_mlip, FAIRChemCalculator
 
 
 def hash_file(file_path):
@@ -39,13 +40,12 @@ EXAMPLE_FILE_HASHES = set(
     [hash_file(file_path) for file_path in glob.glob("examples/*")]
 )
 MAX_ATOMS = os.environ.get("MAX_ATOMS", 2000)
-INFERENCE_ENDPOINT_URL = os.environ["INFERENCE_ENDPOINT_URL"]
+# INFERENCE_ENDPOINT_URL = os.environ["INFERENCE_ENDPOINT_URL"]
+PREDICTOR = pretrained_mlip.get_predict_unit("uma-s-1p1", device="cuda")
 
 
 def validate_ase_atoms_and_login(
     structure_file: dict | str,
-    login_button_value: str,
-    oauth_token: gr.OAuthToken | None,
 ) -> tuple[gr.Button, gr.Button, str]:
     # Validate and write the uploaded file content
     if not structure_file:
@@ -85,18 +85,18 @@ def validate_ase_atoms_and_login(
             gr.Button(interactive=False),
             f"Structure file contains {len(atoms)}, which is more than {MAX_ATOMS} atoms. Please use a smaller structure for this demo, or run this on a local machine!",
         )
-    elif (hash_file(structure_file) not in EXAMPLE_FILE_HASHES) and (
-        (oauth_token is None) or not validate_uma_access(oauth_token=oauth_token)
-    ):
-        return (
-            gr.Button(interactive=False),
-            gr.Button(interactive=False),
-            """
-To use your own structures, you need access to the [gated UMA model repository](https://huggingface.co/facebook/UMA) and you need to login with the button above. See the final tab above '3. Try UMA with your own structures!' for more details and debugging steps!
+#     elif (hash_file(structure_file) not in EXAMPLE_FILE_HASHES) and (
+#         (oauth_token is None) or not validate_uma_access(oauth_token=oauth_token)
+#     ):
+#         return (
+#             gr.Button(interactive=False),
+#             gr.Button(interactive=False),
+#             """
+# To use your own structures, you need access to the [gated UMA model repository](https://huggingface.co/facebook/UMA) and you need to login with the button above. See the final tab above '3. Try UMA with your own structures!' for more details and debugging steps!
                             
-Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved. 
-""",
-        )
+# Note that uploaded structure will be stored by this demo to analyze model usage and identify domains where model accuracy can be improved. 
+# """,
+#         )
     else:
         return (
             gr.Button(interactive=True),
@@ -146,7 +146,6 @@ def run_md_simulation(
     total_charge,
     spin_multiplicity,
     explanation: str | None = None,
-    oauth_token: gr.OAuthToken | None = None,
     progress=gr.Progress(),
 ):
     temp_path = None
@@ -167,13 +166,8 @@ def run_md_simulation(
         atoms.info["charge"] = total_charge
         atoms.info["spin"] = spin_multiplicity
 
-        atoms.calc = HFEndpointCalculator(
-            atoms,
-            endpoint_url=INFERENCE_ENDPOINT_URL,
-            oauth_token=oauth_token,
-            example=example,
-            task_name=task_name,
-        )
+
+        atoms.calc = FAIRChemCalculator(PREDICTOR, task_name=task_name.lower())
 
         # Attach a progress callback to track in gradio
         interval = 1
@@ -301,7 +295,6 @@ def run_relaxation_simulation(
     spin_multiplicity: float,
     relax_unit_cell,
     explanation: str | None = None,
-    oauth_token: gr.OAuthToken | None = None,
     progress=gr.Progress(),
 ):
     temp_path = None
@@ -327,13 +320,8 @@ def run_relaxation_simulation(
         atoms.info["charge"] = total_charge
         atoms.info["spin"] = spin_multiplicity
 
-        atoms.calc = HFEndpointCalculator(
-            atoms,
-            endpoint_url=INFERENCE_ENDPOINT_URL,
-            oauth_token=oauth_token,
-            example=example,
-            task_name=task_name,
-        )
+
+        atoms.calc = FAIRChemCalculator(PREDICTOR, task_name=task_name.lower())
 
         # Set up a trajectory file to keep the results
         with tempfile.NamedTemporaryFile(suffix=".traj", delete=False) as traj_f:
