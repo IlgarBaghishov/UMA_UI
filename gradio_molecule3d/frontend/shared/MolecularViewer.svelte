@@ -418,18 +418,8 @@
   function handleMouseDown(event) {
     if (!isEditing) return;
     
-    const rect = viewer.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    
-    console.log("MouseDown at", x, y);
-
     // Pick atom using hoveredAtom state
     const atom = hoveredAtom;
-    console.log("Picked atom (via hover):", atom);
-    if (atom) {
-        console.log("Atom details:", "Serial:", atom.serial, "Model:", atom.model, "Elem:", atom.elem);
-    }
     
     if (atom) {
       selectedAtom = atom;
@@ -438,10 +428,9 @@
       atomStart = { x: atom.x, y: atom.y, z: atom.z };
       
       // Visual feedback: Highlight selected atom
-      // We call applyStyles here to ensure the highlight is applied initially
-      applyStyles(representations);
+      view.addStyle({model: atom.model, serial: atom.serial}, {sphere:{color:"#00FF00", radius: 0.5}});
       view.render();
-
+      
       // Prevent 3Dmol from handling this event (e.g. rotation)
       event.stopPropagation();
     }
@@ -455,24 +444,15 @@
     
     const scale = 0.05; // Angstroms per pixel (approx)
     
-    // TODO: Implement proper camera-plane dragging.
-    // For now, moving in World X/Y (which might not match screen X/Y if rotated).
-    // Ideally we project/unproject or use camera vectors.
-    const newX = atomStart.x + dx * scale;
-    const newY = atomStart.y - dy * scale;
-    
-    console.log("Dragging: dx/dy", dx, dy, "New Pos:", newX, newY);
-    
-    selectedAtom.x = newX;
-    selectedAtom.y = newY;
+    // Simple World X/Y movement
+    selectedAtom.x = atomStart.x + dx * scale;
+    selectedAtom.y = atomStart.y - dy * scale;
     
     // Re-apply styles to update geometry
-    // DEBUG: Commenting out applyStyles to see if it causes the disappearance.
-    // If the atom stays visible (but maybe doesn't move properly), then applyStyles is the issue.
-    // applyStyles(representations);
-    
-    // Try to just render. Note: This might not update the geometry if buffers aren't refreshed.
+    applyStyles(representations);
     view.render();
+    
+    event.stopPropagation();
   }
 
   function handleMouseUp() {
