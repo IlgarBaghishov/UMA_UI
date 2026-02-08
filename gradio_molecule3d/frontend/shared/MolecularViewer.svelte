@@ -2,7 +2,9 @@
   import * as mol from "3dmol/build/3Dmol.js";
   let TDmol = mol;
 
-  import { onMount, onDestroy, beforeUpdate } from "svelte";
+  import { onMount, onDestroy, beforeUpdate, createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   let viewer;
   export let confidenceLabel = null;
@@ -53,6 +55,12 @@
   let isDragging = false;
   let dragStart = { x: 0, y: 0 };
   let atomStart = { x: 0, y: 0, z: 0 };
+
+  // Persistent edit tracking — survives component re-mounts.
+  // Key: PDB serial (number), Value: {x, y, z} in Ångströms.
+  if (typeof window !== "undefined" && !window.__editedAtomPositions) {
+    window.__editedAtomPositions = {};
+  }
 
   function toggleEditMode() {
     isEditing = !isEditing;
@@ -271,6 +279,8 @@
     let startingConfig = { ...config, cartoonQuality: 7 };
 
     view = TDmol.createViewer(viewer, startingConfig);
+    // Store viewer globally so the "Relax Edited Geometry" button JS can read it
+    window.__mol3dInputViewer = view;
 
     //filter duplicate representations
     let uniqueReps = [];
@@ -310,6 +320,20 @@
         hidden: false,
       },
     });
+
+    // Re-apply any persisted edits after (re-)mount
+    const edits = window.__editedAtomPositions || {};
+    const editKeys = Object.keys(edits);
+    if (editKeys.length > 0) {
+      const model = view.getModel();
+      const atoms = model.selectedAtoms({});
+      let applied = 0;
+      atoms.forEach(a => {
+        const e = edits[a.serial];
+        if (e) { a.x = e.x; a.y = e.y; a.z = e.z; applied++; }
+      });
+      if (applied > 0) console.log("Re-applied", applied, "persisted edits after mount");
+    }
 
     applyStyles(representations);
     view.zoomTo();
@@ -425,49 +449,154 @@
     isAnimated = !isAnimated;
   }
 
+  function getScreenAxes() {
+    // getView() returns [pos.x, pos.y, pos.z, rotationGroup.position.z, qx, qy, qz, qw]
+    // Index 3 is the z-position (zoom), quaternion starts at index 4!
+    // The quaternion represents model rotation (world→camera).
+    // To get screen axes in world space we need the inverse (transpose) rotation,
+    // i.e. the ROWS of the rotation matrix, not the columns.
+    const v = view.getView();
+    const qx = v[4], qy = v[5], qz = v[6], qw = v[7];
+
+    // Right vector = first ROW of rotation matrix (screen X in world space)
+    const right = {
+      x: 1 - 2 * (qy * qy + qz * qz),
+      y: 2 * (qx * qy - qz * qw),
+      z: 2 * (qx * qz + qy * qw),
+    };
+    // Up vector = second ROW of rotation matrix (screen Y in world space)
+    const up = {
+      x: 2 * (qx * qy + qz * qw),
+      y: 1 - 2 * (qx * qx + qz * qz),
+      z: 2 * (qy * qz - qx * qw),
+    };
+    return { right, up };
+  }
+
+  function emitCoords() {
+    // Extract all atom positions from the 3Dmol model, overlaying any
+    // independently-tracked edits (which survive component re-mounts).
+    const model = view.getModel();
+    if (!model) return;
+    const atoms = model.selectedAtoms({});
+    const edits = window.__editedAtomPositions || {};
+    const numEdits = Object.keys(edits).length;
+    const coords = atoms.map(a => {
+      const e = edits[a.serial];
+      return {
+        serial: a.serial,
+        elem: a.elem,
+        x: e ? e.x : a.x,
+        y: e ? e.y : a.y,
+        z: e ? e.z : a.z,
+      };
+    });
+    console.log("emitCoords: dispatching", coords.length, "atoms,", numEdits, "with edits");
+    dispatch("coordsChanged", coords);
+    window.__editedAtomCoords = JSON.stringify(coords);
+  }
+
   function handleMouseDown(event) {
     if (!isEditing) return;
-    
-    // Pick atom using hoveredAtom state
+
     const atom = hoveredAtom;
-    
+
     if (atom) {
       selectedAtom = atom;
       isDragging = true;
       dragStart = { x: event.clientX, y: event.clientY };
       atomStart = { x: atom.x, y: atom.y, z: atom.z };
-      
-      // Visual feedback: Highlight selected atom
+
       updateSelection();
       view.render();
-      
-      // Prevent 3Dmol from handling this event (e.g. rotation)
+
       event.stopPropagation();
+    } else {
+      // Click on empty space deselects
+      selectedAtom = null;
+      updateSelection();
+      view.render();
     }
   }
 
   function handleMouseMove(event) {
     if (!isDragging || !selectedAtom) return;
-    
+
     const dx = event.clientX - dragStart.x;
     const dy = event.clientY - dragStart.y;
-    
-    const scale = 0.05; // Angstroms per pixel (approx)
-    
-    // Simple World X/Y movement
-    selectedAtom.x = atomStart.x + dx * scale;
-    selectedAtom.y = atomStart.y - dy * scale;
-    
-    // Re-apply styles to update geometry
+
+    const scale = 0.05; // Angstroms per pixel
+    const { right, up } = getScreenAxes();
+
+    // Move atom in screen plane using camera-relative axes
+    selectedAtom.x = atomStart.x + (dx * right.x + (-dy) * up.x) * scale;
+    selectedAtom.y = atomStart.y + (dx * right.y + (-dy) * up.y) * scale;
+    selectedAtom.z = atomStart.z + (dx * right.z + (-dy) * up.z) * scale;
+
+    // Persist edit independently of 3Dmol internal state
+    window.__editedAtomPositions[selectedAtom.serial] = {
+      x: selectedAtom.x, y: selectedAtom.y, z: selectedAtom.z
+    };
+
     applyStyles(representations);
     view.render();
-    
+
     event.stopPropagation();
   }
 
   function handleMouseUp() {
-    isDragging = false;
-    selectedAtom = null;
+    if (isDragging) {
+      isDragging = false;
+      emitCoords();
+    }
+    // Keep selectedAtom so arrow keys can still be used
+  }
+
+  function handleKeyDown(event) {
+    if (!isEditing || !selectedAtom) return;
+
+    const step = 0.1; // Angstroms
+    const { right, up } = getScreenAxes();
+    let moved = false;
+
+    if (event.key === "ArrowRight") {
+      selectedAtom.x += right.x * step;
+      selectedAtom.y += right.y * step;
+      selectedAtom.z += right.z * step;
+      moved = true;
+    } else if (event.key === "ArrowLeft") {
+      selectedAtom.x -= right.x * step;
+      selectedAtom.y -= right.y * step;
+      selectedAtom.z -= right.z * step;
+      moved = true;
+    } else if (event.key === "ArrowUp") {
+      selectedAtom.x += up.x * step;
+      selectedAtom.y += up.y * step;
+      selectedAtom.z += up.z * step;
+      moved = true;
+    } else if (event.key === "ArrowDown") {
+      selectedAtom.x -= up.x * step;
+      selectedAtom.y -= up.y * step;
+      selectedAtom.z -= up.z * step;
+      moved = true;
+    } else if (event.key === "Escape") {
+      selectedAtom = null;
+      updateSelection();
+      view.render();
+      return;
+    }
+
+    if (moved) {
+      event.preventDefault();
+      // Persist edit independently of 3Dmol internal state
+      window.__editedAtomPositions[selectedAtom.serial] = {
+        x: selectedAtom.x, y: selectedAtom.y, z: selectedAtom.z
+      };
+      updateSelection();
+      applyStyles(representations);
+      view.render();
+      emitCoords();
+    }
   }
 </script>
 
@@ -740,13 +869,15 @@
         </span>
       </div>
 
-      <div 
-        class="viewer w-full h-full z-10" 
-        bind:this={viewer} 
+      <div
+        class="viewer w-full h-full z-10"
+        bind:this={viewer}
+        tabindex="0"
         on:mousedown|capture={handleMouseDown}
         on:mousemove={handleMouseMove}
         on:mouseup={handleMouseUp}
         on:mouseleave={handleMouseUp}
+        on:keydown={handleKeyDown}
       />
 
       {#if showOffCanvas}

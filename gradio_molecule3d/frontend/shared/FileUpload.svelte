@@ -75,7 +75,7 @@
     on:delete
   />
   {#if moldata != null && molviewer}
-    <MolecularViewer {moldata} {config} {confidenceLabel} {representations} />
+    <MolecularViewer {moldata} {config} {confidenceLabel} {representations} on:coordsChanged />
   {/if}
 {:else}
   <FileRetrieval

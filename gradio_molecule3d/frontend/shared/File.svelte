@@ -32,7 +32,7 @@
   <!-- <FilePreview {i18n} {selectable} on:select {value} {height} /> -->
 
   {#if moldata != null && molviewer}
-    <MolecularViewer {moldata} {config} {confidenceLabel} {representations} />
+    <MolecularViewer {moldata} {config} {confidenceLabel} {representations} on:coordsChanged />
   {/if}
 {:else}
   <Empty unpadded_box={true} size="large"><File /></Empty>

@@ -8,9 +8,11 @@ LICENSE file in the root directory of this source tree.
 import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import gradio as gr
+import numpy as np
 
 from simulation_scripts import (
     run_md_simulation,
@@ -105,6 +107,7 @@ def main():
 
     md_button = gr.Button("Run MD Simulation", interactive=True)
     optimization_button = gr.Button("Run Optimization", interactive=True)
+    edit_relax_button = gr.Button("Relax Edited Geometry", interactive=True, variant="secondary")
 
     output_structure = Molecule3D(
         label="Simulation Visualization",
@@ -131,6 +134,7 @@ def main():
     )
 
     with gr.Blocks(theme=gr.themes.Ocean(), title="FAIR Chem UMA Demo") as demo:
+        edited_coords = gr.Textbox(value="", visible=False, elem_id="edited_coords_store")
         with gr.Row():
             with gr.Column(scale=2):
                 with gr.Column(variant="panel"):
@@ -883,6 +887,7 @@ def main():
 
                         with gr.Column(scale=3):
                             input_visualization.render()
+                            edit_relax_button.render()
 
                 with gr.Column(variant="panel"):
                     gr.Markdown("### 2. Choose the UMA Model Task")
@@ -1063,12 +1068,167 @@ def main():
             validate_ase_atoms_and_login,
             inputs=[input_structure],
             outputs=[optimization_button, md_button, structure_validation],
+            js="""() => {
+                // Clear edit state when a new structure is loaded
+                window.__editedAtomPositions = {};
+                window.__editedAtomCoords = null;
+                console.log("Structure changed — edit state cleared");
+            }""",
         )
 
         load_server_file_btn.click(
             lambda x: x,
             inputs=[server_file_path],
             outputs=[input_structure],
+        )
+
+        def relax_edited_geometry(
+            input_file,
+            coords_json,
+            num_steps,
+            fmax_val,
+            task,
+            charge,
+            spin,
+            relax_cell,
+        ):
+            import json
+            import ase.io
+
+            coords = json.loads(coords_json) if coords_json else None
+            print(f"[DEBUG] relax_edited_geometry: coords={'None' if coords is None else f'{len(coords)} atoms'}")
+            if coords is None:
+                raise gr.Error(
+                    "No edited coordinates. Use edit mode (pencil icon) to move atoms first."
+                )
+
+            atoms = ase.io.read(input_file)
+            n_orig = len(atoms)
+
+            # The viewer displays a supercell for periodic structures
+            # (same logic as convert_file_to_pdb in molecule3d.py).
+            if all(atoms.pbc):
+                cell_lengths = atoms.get_cell().lengths()
+                repeats = tuple(max(1, int(np.ceil(15.0 / l))) for l in cell_lengths)
+                supercell = atoms.repeat(repeats)
+            else:
+                repeats = (1, 1, 1)
+                supercell = atoms.copy()
+
+            n_super = len(supercell)
+            n_coords = len(coords)
+            print(f"[DEBUG] relax_edited_geometry: n_orig={n_orig}, repeats={repeats}, n_super={n_super}, n_coords={n_coords}")
+
+            # Build the full position array from the viewer coordinates.
+            # coords is a list of dicts: {serial, elem, x, y, z}
+            # PDB serials are 1-indexed.
+            use_n = min(n_super, n_coords)
+            viewer_positions = np.zeros((use_n, 3))
+            for c in coords[:use_n]:
+                idx = c["serial"] - 1
+                if 0 <= idx < use_n:
+                    viewer_positions[idx] = [c["x"], c["y"], c["z"]]
+
+            # Undo the PDB rotation applied by write_proteindatabank:
+            #   p_pdb = p_orig @ rot_t.T   =>   p_orig = p_pdb @ rot_t
+            rot_t = None
+            if all(atoms.pbc):
+                _, rot_t = atoms.get_cell().standard_form()
+                if rot_t is not None:
+                    viewer_positions = viewer_positions @ rot_t
+                    print(f"[DEBUG] relax_edited_geometry: applied inverse PDB rotation")
+
+            # Compare viewer positions with the supercell to find edited atoms.
+            supercell_positions = supercell.positions[:use_n]
+            deltas = np.linalg.norm(viewer_positions - supercell_positions, axis=1)
+            max_delta = np.max(deltas)
+            print(f"[DEBUG] relax_edited_geometry: max position delta = {max_delta:.4f} Å")
+
+            # Any atom displaced by more than 0.01 Å is considered edited
+            edited_mask = deltas > 0.01
+            n_edited = int(np.sum(edited_mask))
+            print(f"[DEBUG] relax_edited_geometry: {n_edited} atoms edited in supercell")
+
+            if n_edited == 0:
+                raise gr.Error(
+                    "No atoms appear to have been moved. "
+                    "Toggle edit mode (pencil icon), drag an atom, then click this button."
+                )
+
+            # Map supercell edits back to the unit cell.
+            # Supercell atom i corresponds to unit-cell atom (i % n_orig).
+            # We apply the displacement vector, not the absolute position,
+            # because the supercell atoms are offset by cell translation vectors.
+            for i in np.where(edited_mask)[0]:
+                uc_idx = i % n_orig
+                displacement = viewer_positions[i] - supercell_positions[i]
+                atoms.positions[uc_idx] += displacement
+                print(f"[DEBUG]   supercell atom {i} → unit-cell atom {uc_idx}, "
+                      f"displacement = {np.linalg.norm(displacement):.4f} Å")
+
+            # Write edited structure to temp file
+            tmp = tempfile.NamedTemporaryFile(suffix=".xyz", delete=False)
+            ase.io.write(tmp.name, atoms)
+
+            return run_relaxation_simulation(
+                tmp.name,
+                num_steps,
+                fmax_val,
+                task,
+                charge,
+                spin,
+                relax_cell,
+            )
+
+        edit_relax_button.click(
+            relax_edited_geometry,
+            inputs=[
+                input_structure,
+                edited_coords,
+                optimization_steps,
+                fmax,
+                task_name,
+                total_charge,
+                spin_multiplicity,
+                relax_unit_cell,
+            ],
+            outputs=[output_traj, output_text, reproduction_script, explanation],
+            scroll_to_output=True,
+            js="""(input_file, coords, num_steps, fmax_val, task, charge, spin, relax_cell) => {
+                // Read coords directly from the 3Dmol viewer at click time,
+                // overlaying the independently-tracked edit positions.
+                const edits = window.__editedAtomPositions || {};
+                const numEdits = Object.keys(edits).length;
+                console.log("Relax button JS: " + numEdits + " edited atom positions tracked");
+
+                let result = coords;
+                const viewer = window.__mol3dInputViewer;
+                if (viewer) {
+                    try {
+                        const model = viewer.getModel();
+                        const atoms = model.selectedAtoms({});
+                        const coordsArr = atoms.map(a => {
+                            const e = edits[a.serial];
+                            return {
+                                serial: a.serial,
+                                elem: a.elem,
+                                x: e ? e.x : a.x,
+                                y: e ? e.y : a.y,
+                                z: e ? e.z : a.z,
+                            };
+                        });
+                        result = JSON.stringify(coordsArr);
+                        console.log("Relax button JS: read " + coordsArr.length + " atoms from viewer");
+                    } catch(e) {
+                        console.error("Relax button JS: error reading viewer:", e);
+                        result = window.__editedAtomCoords || coords;
+                    }
+                } else {
+                    console.log("Relax button JS: no viewer ref, using stored coords");
+                    result = window.__editedAtomCoords || coords;
+                }
+                return [input_file, result, num_steps, fmax_val, task, charge, spin, relax_cell];
+            }""",
         )
 
     demo.queue(default_concurrency_limit=None)
